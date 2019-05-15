@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import logoSvg from "./logo.svg";
 
 const App: React.FC = () => {
