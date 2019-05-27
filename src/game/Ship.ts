@@ -1,4 +1,4 @@
-import { Point } from "./Geometry";
+import { Point } from "../graphics/Geometry";
 
 export interface Ship {
   pos: Point;
