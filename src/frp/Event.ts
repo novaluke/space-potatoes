@@ -29,14 +29,32 @@ export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
 
 // Type of `event` (`K`) copy+pasted from the type of `addEventListener` on
 // `HTMLElement`, which appears to be the same type used across all elements.
-export const fromDOMEvent = <K extends keyof HTMLElementEventMap>(
-  element: HTMLElement,
+export function fromDOMEvent<K extends keyof HTMLElementEventMap>(
+  target: HTMLElement,
   eventType: K,
-): Event<HTMLElementEventMap[K]> => {
-  const [event, emit] = mkEvent<HTMLElementEventMap[K]>();
-  element.addEventListener(eventType, emit);
+): Event<HTMLElementEventMap[K]>;
+export function fromDOMEvent<K extends keyof DocumentEventMap>(
+  target: Document,
+  eventType: K,
+): Event<DocumentEventMap[K]>;
+export function fromDOMEvent<
+  K extends keyof (DocumentEventMap | HTMLElementEventMap)
+>(
+  target: Document | HTMLElement,
+  eventType: K,
+): Event<DocumentEventMap[K]> | Event<HTMLElementEventMap[K]> {
+  const isDocument = (val: Document | HTMLElement): val is Document =>
+    "body" in target;
+  let mkEventOutput;
+  if (isDocument(target)) {
+    mkEventOutput = mkEvent<DocumentEventMap[K]>();
+  } else {
+    mkEventOutput = mkEvent<HTMLElementEventMap[K]>();
+  }
+  const [event, emit] = mkEventOutput;
+  target.addEventListener(eventType, emit);
   return event;
-};
+}
 
 export const mapEvt = <A, B>(transform: (val: A) => B) => (
   source: Event<A>,
