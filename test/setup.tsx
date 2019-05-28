@@ -6,6 +6,8 @@ import React from "react";
 import { Router } from "react-router-dom";
 import { render as rtlRender } from "react-testing-library";
 
+export * from "./mockRAF";
+
 beforeEach(() => {
   jest.clearAllMocks();
 });
