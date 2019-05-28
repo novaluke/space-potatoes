@@ -1,5 +1,5 @@
 import { restoreRAF, step, useMockRAF } from "../../test/mockRAF";
-import { fromAnimationFrame, fromDOMEvent } from "./Event";
+import { fromAnimationFrame, fromDOMEvent, map, mkEvent } from "./Event";
 
 describe("Event", () => {
   describe("fromAnimationFrame", () => {
@@ -35,6 +35,35 @@ describe("Event", () => {
       // Check that it doesn't emit for other event types.
       ele.dispatchEvent(new Event("keydown"));
       expect(sub).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("map", () => {
+    it("maps each event using the map function", () => {
+      const transform = (val: string) => val.toUpperCase();
+      const inputs = ["Hello World!", "Space potatoes is the best!"];
+      // Make sure the transform function does make a difference, to avoid false
+      // positives.
+      expect(inputs.map(transform)).not.toEqual(inputs);
+      const outputs: string[] = [];
+      const [event, emit] = mkEvent<string>();
+      map(transform)(event).subscribe(val => outputs.push(val));
+
+      inputs.forEach(emit);
+      expect(outputs).toEqual(inputs.map(transform));
+    });
+
+    it("runs the transform once per event, regardless of number of subscribers", () => {
+      const transform = jest.fn();
+      const [event, emit] = mkEvent();
+
+      const mappedEvent = map(transform)(event);
+      mappedEvent.subscribe(() => null);
+      mappedEvent.subscribe(() => null);
+      expect(transform).not.toHaveBeenCalled();
+
+      emit({});
+      expect(transform).toHaveBeenCalledTimes(1);
     });
   });
 });
