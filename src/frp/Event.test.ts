@@ -1,5 +1,5 @@
 import { restoreRAF, step, useMockRAF } from "../../test/mockRAF";
-import { fromAnimationFrame, fromDOMEvent, map, mkEvent } from "./Event";
+import { fromAnimationFrame, fromDOMEvent, mapEvt, mkEvent } from "./Event";
 
 describe("Event", () => {
   describe("fromAnimationFrame", () => {
@@ -47,7 +47,7 @@ describe("Event", () => {
       expect(inputs.map(transform)).not.toEqual(inputs);
       const outputs: string[] = [];
       const [event, emit] = mkEvent<string>();
-      map(transform)(event).subscribe(val => outputs.push(val));
+      mapEvt(transform)(event).subscribe(val => outputs.push(val));
 
       inputs.forEach(emit);
       expect(outputs).toEqual(inputs.map(transform));
@@ -57,7 +57,7 @@ describe("Event", () => {
       const transform = jest.fn();
       const [event, emit] = mkEvent();
 
-      const mappedEvent = map(transform)(event);
+      const mappedEvent = mapEvt(transform)(event);
       mappedEvent.subscribe(() => null);
       mappedEvent.subscribe(() => null);
       expect(transform).not.toHaveBeenCalled();

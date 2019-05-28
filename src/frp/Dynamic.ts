@@ -31,3 +31,11 @@ export const mkDyn = <T>(initial: T): [Dynamic<T>, (val: T) => void] => {
   };
   return [dynamic, update];
 };
+
+export const mapDyn = <A, B>(transform: (val: A) => B) => (
+  source: Dynamic<A>,
+) => {
+  const [dynamic, update] = mkDyn(transform(source.value));
+  source.subscribe(val => update(transform(val)));
+  return dynamic;
+};

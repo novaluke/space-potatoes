@@ -38,7 +38,9 @@ export const fromDOMEvent = <K extends keyof HTMLElementEventMap>(
   return event;
 };
 
-export const map = <A, B>(transform: (val: A) => B) => (source: Event<A>) => {
+export const mapEvt = <A, B>(transform: (val: A) => B) => (
+  source: Event<A>,
+) => {
   const [event, emit] = mkEvent<B>();
   source.subscribe(val => emit(transform(val)));
   return event;

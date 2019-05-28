@@ -1,5 +1,5 @@
-export { foldDyn } from "./Dynamic";
-export { fromAnimationFrame, fromDOMEvent, map } from "./Event";
+export { foldDyn, mapDyn } from "./Dynamic";
+export { fromAnimationFrame, fromDOMEvent, mapEvt } from "./Event";
 
 // Workaround for not being able to re-export types with the --isolatedModules
 // flag enabled.
