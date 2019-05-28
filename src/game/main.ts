@@ -1,3 +1,4 @@
+import { foldDyn, fromAnimationFrame } from "../frp";
 import { drawPoint } from "../graphics/Geometry";
 import { drawShip, Ship } from "./Ship";
 
@@ -13,7 +14,15 @@ export default (ctx: CanvasRenderingContext2D) => {
     size: 20,
   };
 
-  drawBackground(ctx);
-  drawShip(ctx, starterShip);
-  drawPoint(ctx, "red", starterShip.pos); // Ship center marker for debugging
+  const update = (angle: number) => {
+    drawBackground(ctx);
+    drawShip(ctx, { ...starterShip, angle });
+    drawPoint(ctx, "red", starterShip.pos);
+  };
+
+  foldDyn(
+    (sum, _) => sum + (1 / 180) * Math.PI, // increment by one degree each frame
+    0, // initial value
+    fromAnimationFrame(), // update source
+  ).subscribe(update);
 };
