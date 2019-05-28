@@ -26,3 +26,14 @@ export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
   const emit = (val: T) => subs.forEach(sub => sub(val));
   return [event, emit];
 };
+
+// Type of `event` (`K`) copy+pasted from the type of `addEventListener` on
+// `HTMLElement`, which appears to be the same type used across all elements.
+export const fromDOMEvent = <K extends keyof HTMLElementEventMap>(
+  element: HTMLElement,
+  eventType: K,
+): Event<HTMLElementEventMap[K]> => {
+  const [event, emit] = mkEvent<HTMLElementEventMap[K]>();
+  element.addEventListener(eventType, emit);
+  return event;
+};
