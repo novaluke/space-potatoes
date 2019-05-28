@@ -1,5 +1,6 @@
 import { restoreRAF, step, useMockRAF } from "../../test/mockRAF";
 import {
+  filter,
   fromAnimationFrame,
   fromDOMEvent,
   mapEvt,
@@ -85,6 +86,23 @@ describe("Event", () => {
       expected.forEach(n => sources[n][1](n));
 
       expect(outputs).toEqual(expected);
+    });
+  });
+
+  describe("filter", () => {
+    it("only emits when the predicate returns true", () => {
+      const willPass = "Long enough string";
+      const willNotPass = "foo";
+      const sub = jest.fn();
+      const [event, emit] = mkEvent<string>();
+      filter((val: string) => val.length > 3)(event).subscribe(sub);
+
+      emit(willPass);
+      expect(sub).toHaveBeenCalledTimes(1);
+      expect(sub).toHaveBeenCalledWith(willPass);
+
+      emit(willNotPass);
+      expect(sub).toHaveBeenCalledTimes(1);
     });
   });
 });

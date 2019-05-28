@@ -69,3 +69,13 @@ export const merge = <T>(...sources: Array<Event<T>>) => {
   sources.forEach(source => source.subscribe(emit));
   return event;
 };
+
+export const filter = <T>(predicate: (val: T) => boolean) => (
+  source: Event<T>,
+): Event<T> => {
+  const [event, emit] = mkEvent<T>();
+  source.subscribe(val => {
+    if (predicate(val)) emit(val);
+  });
+  return event;
+};
