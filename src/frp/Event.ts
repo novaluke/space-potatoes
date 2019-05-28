@@ -45,3 +45,9 @@ export const mapEvt = <A, B>(transform: (val: A) => B) => (
   source.subscribe(val => emit(transform(val)));
   return event;
 };
+
+export const merge = <T>(...sources: Array<Event<T>>) => {
+  const [event, emit] = mkEvent<T>();
+  sources.forEach(source => source.subscribe(emit));
+  return event;
+};

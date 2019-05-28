@@ -1,5 +1,11 @@
 import { restoreRAF, step, useMockRAF } from "../../test/mockRAF";
-import { fromAnimationFrame, fromDOMEvent, mapEvt, mkEvent } from "./Event";
+import {
+  fromAnimationFrame,
+  fromDOMEvent,
+  mapEvt,
+  merge,
+  mkEvent,
+} from "./Event";
 
 describe("Event", () => {
   describe("fromAnimationFrame", () => {
@@ -64,6 +70,21 @@ describe("Event", () => {
 
       emit({});
       expect(transform).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("merge", () => {
+    it("emits whenever any of the source events emit", () => {
+      const sources = [mkEvent<number>(), mkEvent<number>(), mkEvent<number>()];
+      const expected = [0, 2, 1];
+      const outputs: number[] = [];
+      const merged = merge(...sources.map(([event, _]) => event));
+      merged.subscribe(val => outputs.push(val));
+
+      // sources[any][1] === emit for that source
+      expected.forEach(n => sources[n][1](n));
+
+      expect(outputs).toEqual(expected);
     });
   });
 });
