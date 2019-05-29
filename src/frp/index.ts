@@ -1,4 +1,4 @@
-export { foldDyn, mapDyn } from "./Dynamic";
+export { foldDyn, mapDyn, holdDyn } from "./Dynamic";
 export { fromAnimationFrame, fromDOMEvent, mapEvt } from "./Event";
 export * from "./pipe";
 
