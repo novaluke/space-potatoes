@@ -70,12 +70,20 @@ export const merge = <T>(...sources: Array<Event<T>>) => {
   return event;
 };
 
-export const filter = <T>(predicate: (val: T) => boolean) => (
-  source: Event<T>,
-): Event<T> => {
-  const [event, emit] = mkEvent<T>();
-  source.subscribe(val => {
-    if (predicate(val)) emit(val);
-  });
-  return event;
-};
+export function filter<T, Narrowed extends T>(
+  predicate: (val: T) => val is Narrowed,
+): (source: Event<T>) => Event<Narrowed>;
+export function filter<T>(
+  predicate: (val: T) => boolean,
+): (source: Event<T>) => Event<T>;
+export function filter<T>(
+  predicate: (val: T) => boolean,
+): (source: Event<T>) => Event<T> {
+  return source => {
+    const [event, emit] = mkEvent<T>();
+    source.subscribe(val => {
+      if (predicate(val)) emit(val);
+    });
+    return event;
+  };
+}
