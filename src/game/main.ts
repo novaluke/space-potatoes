@@ -1,5 +1,7 @@
-import { foldDyn, fromAnimationFrame } from "../frp";
+import { foldDyn, fromAnimationFrame, mapEvt, pipe } from "../frp";
+import { holdDyn } from "../frp/Dynamic";
 import { drawPoint } from "../graphics/Geometry";
+import { isPressed, registerForKeyEvents } from "./keyboard";
 import { drawShip, Ship } from "./Ship";
 
 const drawBackground = (ctx: CanvasRenderingContext2D) => {
@@ -14,15 +16,22 @@ export default (ctx: CanvasRenderingContext2D) => {
     size: 20,
   };
 
-  const update = (angle: number) => {
+  const isThrusting = pipe(
+    mapEvt((keysPressed: number) => isPressed("w", keysPressed)),
+    holdDyn(false),
+  )(registerForKeyEvents());
+
+  const updateShip = (ship: Ship): Ship => ({
+    ...ship,
+    angle: ship.angle + (1 / 180) * Math.PI,
+    pos: [ship.pos[0], isThrusting.value ? ship.pos[1] - 2 : ship.pos[1]],
+  });
+
+  const render = (ship: Ship) => {
     drawBackground(ctx);
-    drawShip(ctx, { ...starterShip, angle });
-    drawPoint(ctx, "red", starterShip.pos);
+    drawShip(ctx, ship);
+    drawPoint(ctx, "red", ship.pos);
   };
 
-  foldDyn(
-    (sum, _) => sum + (1 / 180) * Math.PI, // increment by one degree each frame
-    0, // initial value
-    fromAnimationFrame(), // update source
-  ).subscribe(update);
+  foldDyn(updateShip, starterShip)(fromAnimationFrame()).subscribe(render);
 };
