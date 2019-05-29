@@ -41,7 +41,7 @@ type KeyCodeMap = Readonly<
 >;
 
 // The flag value for no keys being pressed.
-const NO_KEYS = 0;
+export const NO_KEYS = 0;
 
 // A simple mapping of key name to key code. Will be mapped over later to
 // provide a mapping with additional info.
