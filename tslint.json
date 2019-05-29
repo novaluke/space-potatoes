@@ -21,6 +21,7 @@
     "prefer-array-literal": [true, { "allow-type-parameters": true } ],
     "no-unused-expression": true,
     "jsx-no-lambda": false,
-    "object-literal-sort-keys": [true, "shorthand-first"]
+    "object-literal-sort-keys": [true, "shorthand-first"],
+    "no-bitwise": false
   }
 }
