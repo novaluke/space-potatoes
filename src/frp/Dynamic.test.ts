@@ -36,7 +36,7 @@ describe("base dynamic behavior", () => {
 describe("foldDyn", () => {
   it("sets its initial value", () => {
     const initialValue = {};
-    expect(foldDyn(() => null, initialValue, mkEvent()[0]).value).toBe(
+    expect(foldDyn(() => null, initialValue)(mkEvent()[0]).value).toBe(
       initialValue,
     );
   });
@@ -48,7 +48,7 @@ describe("foldDyn", () => {
     const reducer = (acc: number, val: number) => acc + val;
     let output;
 
-    foldDyn(reducer, initialValue, event).subscribe(val => (output = val));
+    foldDyn(reducer, initialValue)(event).subscribe(val => (output = val));
     values.forEach(val => emit(val));
 
     expect(output).toEqual(values.reduce(reducer, initialValue));
@@ -58,7 +58,7 @@ describe("foldDyn", () => {
     const reducer = jest.fn();
     const [event, emit] = mkEvent();
 
-    const dyn = foldDyn(reducer, null, event);
+    const dyn = foldDyn(reducer, null)(event);
     dyn.subscribe(() => null);
     dyn.subscribe(() => null);
 

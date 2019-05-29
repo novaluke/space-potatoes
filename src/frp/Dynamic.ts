@@ -4,9 +4,7 @@ export interface Dynamic<T> extends Event<T> {
   readonly value: T;
 }
 
-export const foldDyn = <A, B>(
-  reducer: (acc: B, event: A) => B,
-  initial: B,
+export const foldDyn = <A, B>(reducer: (acc: B, event: A) => B, initial: B) => (
   event: Event<A>,
 ): Dynamic<B> => {
   const [dynamic, update] = mkDyn(initial);
