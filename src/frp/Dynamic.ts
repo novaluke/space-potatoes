@@ -37,3 +37,9 @@ export const mapDyn = <A, B>(transform: (val: A) => B) => (
   source.subscribe(val => update(transform(val)));
   return dynamic;
 };
+
+export const holdDyn = <T>(initialValue: T) => (source: Event<T>) => {
+  const [dynamic, update] = mkDyn(initialValue);
+  source.subscribe(update);
+  return dynamic;
+};

@@ -1,4 +1,4 @@
-import { foldDyn, mapDyn, mkDyn } from "./Dynamic";
+import { foldDyn, holdDyn, mapDyn, mkDyn } from "./Dynamic";
 import { mkEvent } from "./Event";
 
 describe("base dynamic behavior", () => {
@@ -115,5 +115,25 @@ describe("map", () => {
     update(null);
     // One call for the initial value, a second call for the updated value.
     expect(transform).toHaveBeenCalledTimes(2);
+  });
+
+  describe("holdDyn", () => {
+    it("sets its initial value", () => {
+      const initial = "foo";
+      const dyn = holdDyn(initial)(mkEvent<string>()[0]);
+
+      expect(dyn.value).toBe(initial);
+    });
+
+    it("updates its value whenever the source Event emits", () => {
+      const values = ["Hello World!", "Space potatoes is the best!"];
+      const [event, emit] = mkEvent<string>();
+      const dyn = holdDyn("")(event);
+
+      values.forEach(val => {
+        emit(val);
+        expect(dyn.value).toBe(val);
+      });
+    });
   });
 });
