@@ -12,25 +12,20 @@ interface ShipBounds {
   nose: Point;
 }
 
-const shipBounds = ({ pos: [x, y], size, angle }: Ship): ShipBounds => {
-  return {
-    backLeft: [
-      x - size * ((2 / 3) * Math.cos(angle) + Math.sin(angle)),
-      y + size * ((2 / 3) * Math.sin(angle) - Math.cos(angle)),
-    ],
-    backRight: [
-      x - size * ((2 / 3) * Math.cos(angle) - Math.sin(angle)),
-      y + size * ((2 / 3) * Math.sin(angle) + Math.cos(angle)),
-    ],
-    nose: [
-      x + (4 / 3) * size * Math.cos(angle),
-      y - (4 / 3) * size * Math.sin(angle),
-    ],
-  };
+// Dimensions such that the center point is the triangle's centroid.
+const shipBounds: ShipBounds = {
+  backLeft: [15, 10],
+  backRight: [-15, 10],
+  nose: [0, -20],
 };
 
 export const drawShip = (ctx: CanvasRenderingContext2D, ship: Ship) => {
-  const { nose, backLeft, backRight } = shipBounds(ship);
+  const { nose, backLeft, backRight } = shipBounds;
+
+  ctx.save();
+
+  ctx.translate(...ship.pos);
+  ctx.rotate(ship.angle);
 
   ctx.beginPath();
   ctx.moveTo(...backLeft);
@@ -41,4 +36,6 @@ export const drawShip = (ctx: CanvasRenderingContext2D, ship: Ship) => {
   ctx.strokeStyle = "white";
   ctx.lineWidth = ship.size / 20;
   ctx.stroke();
+
+  ctx.restore();
 };

@@ -26,10 +26,10 @@ export default (ctx: CanvasRenderingContext2D) => {
     mapEvt((keysPressed: number) => {
       const a = KEY_FLAGS[KEY_CODES.a];
       const d = KEY_FLAGS[KEY_CODES.d];
-      if ((keysPressed & (a | d)) === d) {
+      if ((keysPressed & (a | d)) === a) {
         return -1;
       }
-      if ((keysPressed & (a | d)) === a) {
+      if ((keysPressed & (a | d)) === d) {
         return 1;
       }
       return 0;
