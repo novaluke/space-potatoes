@@ -1,5 +1,11 @@
 export { foldDyn, mapDyn, holdDyn } from "./Dynamic";
-export { fromAnimationFrame, fromDOMEvent, mapEvt } from "./Event";
+export {
+  merge,
+  filter,
+  fromAnimationFrame,
+  fromDOMEvent,
+  mapEvt,
+} from "./Event";
 export * from "./pipe";
 
 // Workaround for not being able to re-export types with the --isolatedModules
