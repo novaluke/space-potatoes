@@ -19,13 +19,8 @@ const shipBounds: ShipBounds = {
   nose: [0, -20],
 };
 
-export const drawShip = (ctx: CanvasRenderingContext2D, ship: Ship) => {
+export const drawShip = (ctx: CanvasRenderingContext2D) => {
   const { nose, backLeft, backRight } = shipBounds;
-
-  ctx.save();
-
-  ctx.translate(...ship.pos);
-  ctx.rotate(ship.angle);
 
   ctx.beginPath();
   ctx.moveTo(...backLeft);
@@ -34,8 +29,6 @@ export const drawShip = (ctx: CanvasRenderingContext2D, ship: Ship) => {
   ctx.closePath();
 
   ctx.strokeStyle = "white";
-  ctx.lineWidth = ship.size / 20;
+  ctx.lineWidth = 1;
   ctx.stroke();
-
-  ctx.restore();
 };

@@ -6,7 +6,7 @@ import {
   mapEvt,
   pipe,
 } from "../frp";
-import { drawPoint } from "../graphics/Geometry";
+import { drawPoint, Transforms, withContext } from "../graphics/Geometry";
 import { KEY_CODES, KEY_FLAGS, registerForKeyEvents } from "./keyboard";
 import { drawShip, Ship } from "./Ship";
 
@@ -60,8 +60,12 @@ export default (ctx: CanvasRenderingContext2D) => {
 
   const render = (ship: Ship) => {
     drawBackground(ctx);
-    drawShip(ctx, ship);
-    drawPoint(ctx, "red", ship.pos);
+    const shipRelative: Transforms = {
+      angle: ship.angle,
+      translate: ship.pos,
+    };
+    withContext(ctx, shipRelative)(drawShip);
+    withContext(ctx, shipRelative)(drawPoint("red"));
   };
 
   foldDyn(updateShip, starterShip)(fromAnimationFrame()).subscribe(render);
