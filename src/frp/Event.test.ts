@@ -1,5 +1,7 @@
 import { restoreRAF, step, useMockRAF } from "../../test/mockRAF";
+import { mkDyn } from "./Dynamic";
 import {
+  attach,
   filter,
   fromAnimationFrame,
   fromDOMEvent,
@@ -103,6 +105,41 @@ describe("Event", () => {
 
       emit(willNotPass);
       expect(sub).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("attach", () => {
+    it("emits [dynamic.value, event value] when the event emits", () => {
+      const dynValues = ["Hello World!", "Space potatoes is the best!"];
+      const evtValues = [0, 1, 2];
+      const [event, emit] = mkEvent<number>();
+      const [dyn, update] = mkDyn<string>(dynValues[0]);
+      let emitted: [string, number];
+      attach(dyn, event).subscribe(val => (emitted = val));
+
+      expect(emitted!).not.toBeDefined();
+
+      emit(evtValues[0]);
+      expect(emitted!).toEqual([dynValues[0], evtValues[0]]);
+
+      emit(evtValues[1]);
+      expect(emitted!).toEqual([dynValues[0], evtValues[1]]);
+
+      update(dynValues[1]);
+      emit(evtValues[2]);
+      expect(emitted!).toEqual([dynValues[1], evtValues[2]]);
+    });
+
+    it("doesn't emit when the dynamic changes", () => {
+      const [event] = mkEvent();
+      const [dyn, update] = mkDyn(0);
+      let emitCount = 0;
+      attach(dyn, event).subscribe(() => (emitCount += 1));
+
+      expect(emitCount).toBe(0);
+
+      update(1);
+      expect(emitCount).toBe(0);
     });
   });
 });

@@ -1,3 +1,5 @@
+import { Dynamic } from "./Dynamic";
+
 type Subscriber<T> = (val: T) => void;
 
 export interface Event<T> {
@@ -87,3 +89,12 @@ export function filter<T>(
     return event;
   };
 }
+
+export const attach = <A, B>(
+  dyn: Dynamic<A>,
+  source: Event<B>,
+): Event<[A, B]> => {
+  const [event, emit] = mkEvent<[A, B]>();
+  source.subscribe(val => emit([dyn.value, val]));
+  return event;
+};
