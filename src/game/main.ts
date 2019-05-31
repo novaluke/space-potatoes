@@ -24,7 +24,8 @@ export default (ctx: CanvasRenderingContext2D) => {
   const starterShip: Ship = {
     angle: (-90 / 180) * Math.PI,
     pos: [ctx.canvas.width / 2, ctx.canvas.height / 2],
-    size: 20,
+    scale: [3, 3],
+    thrustPower: 0,
     vel: [0, 0],
   };
 
@@ -45,9 +46,10 @@ export default (ctx: CanvasRenderingContext2D) => {
     drawBackground(ctx);
     const shipRelative: Transforms = {
       angle: ship.angle,
+      scale: ship.scale,
       translate: ship.pos,
     };
-    withContext(ctx, shipRelative)(drawShip);
+    withContext(ctx, shipRelative)(drawShip(ship.thrustPower));
     withContext(ctx, shipRelative)(drawPoint("red"));
   };
 

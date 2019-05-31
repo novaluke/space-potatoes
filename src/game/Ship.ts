@@ -1,13 +1,14 @@
 import { Dynamic, Event, foldDyn, pipe } from "../frp";
 import { attach } from "../frp/Event";
-import { Point, vectorXY } from "../graphics/Geometry";
+import { bound, Point, vectorXY, withContext } from "../graphics/Geometry";
 import { KEY_CODES, KEY_FLAGS } from "./keyboard";
 
 export interface Ship {
   pos: Point;
-  size: number;
+  scale: [number, number];
   angle: number;
   vel: [number, number]; // [x, y]
+  thrustPower: number; // between 0 and 1, where 1 is max power reached
 }
 
 interface ShipBounds {
@@ -23,8 +24,14 @@ const shipBounds: ShipBounds = {
   nose: [20, 0],
 };
 
-export const drawShip = (ctx: CanvasRenderingContext2D) => {
+export const drawShip = (thrustPower: number) => (
+  ctx: CanvasRenderingContext2D,
+) => {
   const { nose, backLeft, backRight } = shipBounds;
+
+  // Draw thruster first so the ship is overlaid over it, hiding any overlap
+  // with the thruster's stroke width.
+  if (thrustPower) withContext(ctx)(drawThruster(thrustPower));
 
   ctx.beginPath();
   ctx.moveTo(...backLeft);
@@ -32,9 +39,29 @@ export const drawShip = (ctx: CanvasRenderingContext2D) => {
   ctx.lineTo(...nose);
   ctx.closePath();
 
+  ctx.fillStyle = "black";
+  ctx.fill(); // Fill in any overlap with the thruster.
   ctx.strokeStyle = "white";
   ctx.lineWidth = 1;
   ctx.stroke();
+};
+
+const drawThruster = (power: number) => (ctx: CanvasRenderingContext2D) => {
+  const center = [-25 * power, 0 * power] as Point;
+  const left = [-10 * power, -6 * power] as Point;
+  const right = [-10 * power, 6 * power] as Point;
+
+  ctx.beginPath();
+  ctx.moveTo(...left);
+  ctx.lineTo(...center);
+  ctx.lineTo(...right);
+  ctx.closePath();
+
+  ctx.strokeStyle = "yellow";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.fillStyle = "red";
+  ctx.fill();
 };
 
 type ShipUpdate = (
@@ -76,12 +103,14 @@ export const updateVel = (acceleration: number): ShipUpdate => (
   timeDelta,
   keysPressed,
 ) => prevShip => {
+  const thrusting = !!(keysPressed & KEY_FLAGS[KEY_CODES.w]);
   const [accelX, accelY] = vectorXY(
-    keysPressed & KEY_FLAGS[KEY_CODES.w] ? acceleration * timeDelta : 0,
+    thrusting ? acceleration * timeDelta : 0,
     prevShip.angle,
   );
   return {
     ...prevShip,
+    thrustPower: bound(0, 1, prevShip.thrustPower + (thrusting ? 0.15 : -0.5)),
     vel: [prevShip.vel[0] + accelX, prevShip.vel[1] + accelY],
   };
 };

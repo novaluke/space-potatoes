@@ -1,4 +1,4 @@
-import { Point, vectorXY, wrapOutOfBounds } from "./Geometry";
+import { bound, Point, vectorXY, wrapOutOfBounds } from "./Geometry";
 
 describe("Geometry", () => {
   describe("splitXY", () => {
@@ -75,5 +75,26 @@ describe("Geometry", () => {
     // eventually and rapidly. 2) Anything moving fast enough to get this many
     // screens out is a bug anyway.
     // it("recursively wraps coordinates that are multiple screens out", () => {});
+  });
+
+  describe("bound", () => {
+    it("caps any value beyond the maximum", () => {
+      const max = 100;
+      const tooLarge = max + 1;
+      expect(bound(0, max, tooLarge)).toBe(max);
+    });
+
+    it("caps any value below the minimum", () => {
+      const min = -100;
+      const tooSmall = min - 1;
+      expect(bound(min, 0, tooSmall)).toBe(min);
+    });
+
+    it("doesn't change values within the bounds", () => {
+      const min = -100;
+      const max = 100;
+      const val = 0;
+      expect(bound(min, max, val)).toBe(val);
+    });
   });
 });

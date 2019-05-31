@@ -37,6 +37,9 @@ export const vectorXY = (
   Math.sin(angle) * magnitude,
 ];
 
+export const bound = (min: number, max: number, val: number) =>
+  Math.max(min, Math.min(max, val));
+
 const wrap = (max: number, val: number) => {
   // Shift the value positively by a screen if below the minimum bound,
   // negatively by a screen if above the maximum bound, and by no screens if
