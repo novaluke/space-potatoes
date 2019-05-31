@@ -28,3 +28,11 @@ export const withContext = (
 
   return output;
 };
+
+export const vectorXY = (
+  magnitude: number,
+  angle: number,
+): [number, number] => [
+  Math.cos(angle) * magnitude,
+  Math.sin(angle) * magnitude,
+];
