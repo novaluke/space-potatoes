@@ -36,3 +36,19 @@ export const vectorXY = (
   Math.cos(angle) * magnitude,
   Math.sin(angle) * magnitude,
 ];
+
+const wrap = (max: number, val: number) => {
+  // Shift the value positively by a screen if below the minimum bound,
+  // negatively by a screen if above the maximum bound, and by no screens if
+  // within bounds.
+  return val + (val < 0 ? max : val > max ? -max : 0);
+};
+
+export const wrapOutOfBounds = (bounds: [number, number]) => <
+  T extends { pos: Point }
+>(
+  prev: T,
+): T => ({
+  ...prev,
+  pos: [wrap(bounds[0], prev.pos[0]), wrap(bounds[1], prev.pos[1])],
+});

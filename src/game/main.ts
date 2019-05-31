@@ -1,5 +1,10 @@
 import { fromAnimationFrame } from "../frp";
-import { drawPoint, Transforms, withContext } from "../graphics/Geometry";
+import {
+  drawPoint,
+  Transforms,
+  withContext,
+  wrapOutOfBounds,
+} from "../graphics/Geometry";
 import { registerForKeyEvents } from "./keyboard";
 import {
   drawShip,
@@ -33,6 +38,7 @@ export default (ctx: CanvasRenderingContext2D) => {
     updateAngle(180 / 1000),
     updateVel(0.25 / 1000),
     updatePos,
+    () => wrapOutOfBounds([ctx.canvas.width, ctx.canvas.height]),
   );
 
   const render = (ship: Ship) => {
