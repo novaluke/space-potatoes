@@ -1,4 +1,10 @@
-import { bound, Point, vectorXY, wrapOutOfBounds } from "./Geometry";
+import {
+  bound,
+  distanceBetweenPoints,
+  Point,
+  vectorXY,
+  wrapOutOfBounds,
+} from "./Geometry";
 
 describe("Geometry", () => {
   describe("splitXY", () => {
@@ -95,6 +101,18 @@ describe("Geometry", () => {
       const max = 100;
       const val = 0;
       expect(bound(min, max, val)).toBe(val);
+    });
+  });
+
+  describe("distanceBetweenPoints", () => {
+    it("returns the distance between two points", () => {
+      const a: Point = [5, 7];
+      const b: Point = [4, 2];
+      const distance = 5.099;
+      const round = (decimals: number, n: number) =>
+        Number(n.toFixed(decimals));
+
+      expect(round(3, distanceBetweenPoints(a, b))).toBe(distance);
     });
   });
 });

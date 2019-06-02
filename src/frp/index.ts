@@ -1,5 +1,16 @@
-export { foldDyn, mapDyn, holdDyn } from "./Dynamic";
 export {
+  constDyn,
+  concatDyn,
+  splitDyn,
+  foldDyn,
+  mapDyn,
+  holdDyn,
+  join,
+} from "./Dynamic";
+export {
+  attach,
+  mapEvtMaybe,
+  never,
   merge,
   filter,
   fromAnimationFrame,

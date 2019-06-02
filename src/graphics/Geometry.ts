@@ -40,6 +40,9 @@ export const vectorXY = (
 export const bound = (min: number, max: number, val: number) =>
   Math.max(min, Math.min(max, val));
 
+export const distanceBetweenPoints = (a: Point, b: Point) =>
+  Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2);
+
 const wrap = (max: number, val: number) => {
   // Shift the value positively by a screen if below the minimum bound,
   // negatively by a screen if above the maximum bound, and by no screens if
@@ -55,3 +58,33 @@ export const wrapOutOfBounds = (bounds: [number, number]) => <
   ...prev,
   pos: [wrap(bounds[0], prev.pos[0]), wrap(bounds[1], prev.pos[1])],
 });
+
+interface DrawConfig {
+  strokeStyle?: string;
+  lineWidth?: number;
+  fillStyle?: string;
+}
+
+export const drawPoly = (vertices: Point[], config: DrawConfig = {}) => (
+  ctx: CanvasRenderingContext2D,
+) => {
+  // Apply the config options to the context.
+  (Object.keys(config) as Array<keyof DrawConfig>).forEach(method => {
+    const foo = config[method];
+    if (foo) ctx[method] = foo;
+  });
+  ctx.beginPath();
+  vertices.forEach(([x, y], index) =>
+    index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y),
+  );
+  ctx.closePath();
+  ctx.stroke();
+  if (config.fillStyle) ctx.fill();
+};
+
+export const circleCollision = (
+  aPos: Point,
+  aRadius: number,
+  bPos: Point,
+  bRadius: number,
+) => distanceBetweenPoints(aPos, bPos) < aRadius + bRadius;

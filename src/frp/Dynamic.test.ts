@@ -1,4 +1,5 @@
-import { foldDyn, holdDyn, mapDyn, mkDyn } from "./Dynamic";
+import { updateExplosion } from "../game/Explosion";
+import { foldDyn, holdDyn, join, mapDyn, mkDyn } from "./Dynamic";
 import { mkEvent } from "./Event";
 
 describe("base dynamic behavior", () => {
@@ -18,6 +19,8 @@ describe("base dynamic behavior", () => {
     expect(sub).toHaveBeenCalledWith(nextValue);
   });
 
+  // TODO Reflex semantics actually specify the opposite - value is updated
+  // AFTER the event fires. Consider changing this.
   it("updates its value before notifying its subscribers", () => {
     const nextValue = {};
     let foundValue;
@@ -133,6 +136,67 @@ describe("map", () => {
       values.forEach(val => {
         emit(val);
         expect(dyn.value).toBe(val);
+      });
+    });
+  });
+
+  // TODO check if the full suite of cases has been covered
+  describe("join", () => {
+    it("emits values emitted by the inner Dynamic", () => {
+      const [innerDyn, updateInnerDyn] = mkDyn("");
+      const values = ["Hello World!", "Space potatoes is the best!"];
+      const emitted: string[] = [];
+      const [outerDyn] = mkDyn(innerDyn);
+
+      join(outerDyn).subscribe(val => emitted.push(val));
+      values.forEach(updateInnerDyn);
+
+      expect(emitted).toEqual(values);
+    });
+
+    it("has the same value as the inner dynamic", () => {
+      const initialValue = "";
+      const values = ["Hello World!", "Space potatoes is the best!"];
+      const [innerDyn, updateInnerDyn] = mkDyn(initialValue);
+      const [outerDyn] = mkDyn(innerDyn);
+      const joined = join(outerDyn);
+
+      expect(joined.value).toBe(initialValue);
+      values.forEach(val => {
+        updateInnerDyn(val);
+        expect(joined.value).toBe(val);
+      });
+    });
+
+    describe("when a new inner dynamic is emitted", () => {
+      it("unsubscribes from the old dynamic", () => {
+        const [oldInnerDyn, updateOldInnerDyn] = mkDyn({});
+        jest.spyOn(oldInnerDyn, "unsubscribe");
+        const [outerDyn, update] = mkDyn(oldInnerDyn);
+        const sub = jest.fn();
+        // Prevent false positives
+        expect(oldInnerDyn.unsubscribe).not.toHaveBeenCalled();
+        join(outerDyn).subscribe(sub);
+
+        update(mkDyn({})[0]);
+        expect(oldInnerDyn.unsubscribe).toHaveBeenCalled();
+
+        // Prevent false positives
+        expect(sub).toHaveBeenCalledTimes(1);
+        updateOldInnerDyn({});
+        expect(sub).toHaveBeenCalledTimes(1);
+      });
+
+      it("emits the value of the new inner dynamic", () => {
+        const [outerDyn, update] = mkDyn(mkDyn({})[0]);
+        const innerVal = {};
+        const [newInner] = mkDyn(innerVal);
+        const sub = jest.fn();
+
+        join(outerDyn).subscribe(sub);
+        update(newInner);
+
+        expect(sub).toHaveBeenCalledWith(innerVal);
       });
     });
   });

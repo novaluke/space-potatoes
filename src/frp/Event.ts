@@ -1,9 +1,10 @@
 import { Dynamic } from "./Dynamic";
 
-type Subscriber<T> = (val: T) => void;
+export type Subscriber<T> = (val: T) => void;
 
 export interface Event<T> {
-  subscribe: (fn: (val: T) => void) => void;
+  subscribe: (fn: Subscriber<T>) => void;
+  unsubscribe: (fn: Subscriber<T>) => void;
 }
 
 // Emits at every animation frame with the time delta since the last event.
@@ -24,6 +25,10 @@ export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
   const subs: Array<Subscriber<T>> = [];
   const event: Event<T> = {
     subscribe: sub => subs.push(sub),
+    unsubscribe: sub => {
+      const index = subs.indexOf(sub);
+      if (index !== -1) subs.splice(subs.indexOf(sub), 1);
+    },
   };
   const emit = (val: T) => subs.forEach(sub => sub(val));
   return [event, emit];
@@ -96,5 +101,33 @@ export const attach = <A, B>(
 ): Event<[A, B]> => {
   const [event, emit] = mkEvent<[A, B]>();
   source.subscribe(val => emit([dyn.value, val]));
+  return event;
+};
+
+export const never = <T>(): Event<T> => mkEvent<T>()[0];
+
+// WARNING: untested!
+export const mapEvtMaybe = <T, R>(transform: (val: T) => R | null) => (
+  source: Event<T>,
+): Event<R> => {
+  const [event, emit] = mkEvent<R>();
+  source.subscribe(val => {
+    const mapped = transform(val);
+    if (mapped !== null) emit(mapped);
+  });
+  return event;
+};
+export const takeWhile = <T>(
+  predicate: (val: T) => boolean,
+  inclusive?: boolean,
+) => (source: Event<T>): Event<T> => {
+  const [event, emit] = mkEvent<T>();
+  const sub = (val: T) => {
+    if (!predicate(val)) {
+      source.unsubscribe(sub);
+    }
+    if (predicate(val) || inclusive) emit(val);
+  };
+  source.subscribe(sub);
   return event;
 };

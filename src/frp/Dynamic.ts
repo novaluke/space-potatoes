@@ -1,3 +1,4 @@
+import { Dynamic } from "./Dynamic";
 import { Event, mkEvent } from "./Event";
 
 export interface Dynamic<T> extends Event<T> {
@@ -16,13 +17,14 @@ export const foldDyn = <A, B>(reducer: (acc: B, event: A) => B, initial: B) => (
 
 export const mkDyn = <T>(initial: T): [Dynamic<T>, (val: T) => void] => {
   let value = initial;
-  const [{ subscribe }, emit] = mkEvent<T>();
+  const [{ subscribe, unsubscribe }, emit] = mkEvent<T>();
   const update = (newVal: T) => {
     value = newVal;
     emit(value);
   };
   const dynamic: Dynamic<T> = {
     subscribe,
+    unsubscribe,
     get value() {
       return value;
     },
@@ -41,5 +43,57 @@ export const mapDyn = <A, B>(transform: (val: A) => B) => (
 export const holdDyn = <T>(initialValue: T) => (source: Event<T>) => {
   const [dynamic, update] = mkDyn(initialValue);
   source.subscribe(update);
+  return dynamic;
+};
+
+export const constDyn = <T>(val: T) => mkDyn(val)[0];
+
+// WARNING: not tested!
+type ExtractTupleGenerics<T> = {
+  [K in keyof T]: T[K] extends Dynamic<infer G> ? G : never
+};
+type ExtractGeneric<T> = T extends Dynamic<infer G> ? G : never;
+export const concatDyn = <T extends Array<Dynamic<any>>>(
+  // tslint:disable-next-line:trailing-comma
+  ...dynamics: T
+): Dynamic<ExtractTupleGenerics<T>> => {
+  const [dynamic, update] = mkDyn(dynamics.map(dyn => dyn.value));
+  dynamics.forEach((dyn, index) => {
+    dyn.subscribe(val => {
+      const newDynValue = dynamic.value.slice();
+      newDynValue.splice(index, 1, val);
+      update(newDynValue);
+    });
+  });
+  return dynamic as Dynamic<ExtractTupleGenerics<T>>;
+};
+export const splitDyn = <T extends Dynamic<any[]>>(
+  dyn: T,
+): { [K in keyof ExtractGeneric<T>]: Dynamic<ExtractGeneric<T>[K]> } => {
+  const outputs = dyn.value.map(val => mkDyn(val));
+  outputs.forEach(([_, update], index) =>
+    dyn.subscribe(val => update(val[index])),
+  );
+  return (outputs.map(([dynamic, _]) => dynamic) as unknown) as {
+    [K in keyof ExtractGeneric<T>]: Dynamic<ExtractGeneric<T>[K]>
+  };
+};
+// WARNING: only partially tested!
+export const join = <T>(outer: Dynamic<Dynamic<T>>): Dynamic<T> => {
+  let oldInner = outer.value;
+  const [dynamic, update] = mkDyn(oldInner.value);
+  // When there is a new inner value, update the resultant dynamic.
+  oldInner.subscribe(update);
+
+  // When the outer dynamic updates, stop listening to the old inner dynamic,
+  // subscribe to the new inner dynamic, and update+emit based on the new inner
+  // dynamic's value.
+  outer.subscribe(newInner => {
+    oldInner.unsubscribe(update);
+    oldInner = newInner;
+    newInner.subscribe(update);
+    update(newInner.value);
+  });
+
   return dynamic;
 };

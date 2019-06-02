@@ -22,7 +22,7 @@
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "tslint -c tslint.json src/**/*.{ts,tsx} ",
+    "lint": "tslint -c tslint.json {src,test}/**/*.{ts,tsx} ",
     "typecheck": "tsc --noEmit",
     "verify": "concurrently -n \"LINT,TSC,TEST\" -c \"blue,magenta,yellow\" \"yarn lint\" \"yarn typecheck\" \"CI=true yarn test\""
   },

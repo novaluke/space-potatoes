@@ -4,8 +4,9 @@ import { bound, Point, vectorXY, withContext } from "../graphics/Geometry";
 import { KEY_CODES, KEY_FLAGS } from "./keyboard";
 
 export interface Ship {
+  dead: boolean;
   pos: Point;
-  scale: [number, number];
+  scale: number;
   angle: number;
   vel: [number, number]; // [x, y]
   thrustPower: number; // between 0 and 1, where 1 is max power reached
@@ -122,3 +123,20 @@ export const updatePos: ShipUpdate = timeDelta => prevShip => ({
     prevShip.pos[1] + prevShip.vel[1] * timeDelta,
   ],
 });
+
+export const mkShip = (
+  initialState: Ship,
+  keysPressed: Dynamic<number>,
+  fpsDelta: Event<number>,
+  // Config values are in units per *second*
+  { turnRate, acceleration }: { turnRate: number; acceleration: number },
+): Dynamic<Ship> => {
+  return foldDyn((state, [keyMask, timeDelta]: [number, number]) => {
+    const updates = [
+      updateAngle(turnRate / 1000),
+      updateVel(acceleration / 1000),
+      updatePos,
+    ];
+    return pipe(...updates.map(update => update(timeDelta, keyMask)))(state);
+  }, initialState)(attach(keysPressed, fpsDelta));
+};

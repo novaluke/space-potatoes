@@ -11,6 +11,22 @@ import {
 } from "./Event";
 
 describe("Event", () => {
+  describe("unsubscribing", () => {
+    // TODO word this better
+    it("doesn't fire events once unsubscribed", () => {
+      const [event, emit] = mkEvent();
+      const sub = jest.fn();
+      event.subscribe(sub);
+
+      emit({});
+      expect(sub).toHaveBeenCalledTimes(1);
+
+      event.unsubscribe(sub);
+      emit({});
+      expect(sub).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("fromAnimationFrame", () => {
     beforeEach(() => useMockRAF());
     afterEach(() => restoreRAF());
