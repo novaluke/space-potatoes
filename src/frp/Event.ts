@@ -1,3 +1,4 @@
+import { registerEmitter } from "./core";
 import { Dynamic } from "./Dynamic";
 
 export type Subscriber<T> = (val: T) => void;
@@ -30,7 +31,7 @@ export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
       if (index !== -1) subs.splice(subs.indexOf(sub), 1);
     },
   };
-  const emit = (val: T) => subs.forEach(sub => sub(val));
+  const emit = (val: T) => registerEmitter(val, subs);
   return [event, emit];
 };
 
