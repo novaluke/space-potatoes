@@ -75,22 +75,21 @@ export default (ctx: CanvasRenderingContext2D) => {
       dynExplosions,
     ),
   );
-  // Have to take a sample-based approach to checking the ship and asteroids or
-  // we get weird order-of-event-occurrence issues between the shipDeath event
-  // and ship update events. This would presumably not be an issue if the FRP
-  // implementation followed proper semantics.
-  fpsDelta.subscribe(() => {
-    const ship = dynShip.value;
-    const asteroids = flatAsteroids.value;
-    if (ship !== null) {
-      const hasCollided = !asteroids.every(
-        asteroid => !circleCollision(ship.pos, 20, asteroid.pos, 40),
-      );
-      if (hasCollided) {
-        emitShipDeath(ship.pos);
+
+  // Check if the ship has collided with an asteroid, and if so emit a death
+  // event for it.
+  concatDyn(dynShip, concatDyn(...dynAsteroids)).subscribe(
+    ([ship, asteroids]) => {
+      if (ship !== null) {
+        const hasCollided = !asteroids.every(
+          asteroid => !circleCollision(ship.pos, 20, asteroid.pos, 40),
+        );
+        if (hasCollided) {
+          emitShipDeath(ship.pos);
+        }
       }
-    }
-  });
+    },
+  );
 
   concatDyn(dynShip, flatAsteroids, flatExplosions).subscribe(
     ([ship, asteroids, explosions]) => {
