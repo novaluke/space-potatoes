@@ -78,6 +78,17 @@ export const splitDyn = <T extends any[]>(
     [K in keyof T]: Dynamic<T[K]>
   };
 };
+export const switchDyn = <T>(dyn: Dynamic<Event<T>>): Event<T> => {
+  let oldEvent = dyn.value;
+  const [event, emit] = mkEvent<T>();
+  oldEvent.subscribe(emit);
+  dyn.subscribe(newEvent => {
+    oldEvent.unsubscribe(emit);
+    oldEvent = newEvent;
+    newEvent.subscribe(emit);
+  });
+  return event;
+};
 // WARNING: only partially tested!
 export const join = <T>(outer: Dynamic<Dynamic<T>>): Dynamic<T> => {
   let oldInner = outer.value;
