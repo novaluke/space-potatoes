@@ -47,12 +47,11 @@ export default (ctx: CanvasRenderingContext2D) => {
     .map(() => mkAsteroid({ bounds, vertexCount: 10, radius: 40 }, fpsDelta));
   const dynShip = join(
     holdDyn<Dynamic<Ship> | Dynamic<null>>(
-      mapDyn<Ship, Ship>(wrapOutOfBounds(bounds))(
-        mkShip(starterShip, keysPressed, fpsDelta, {
-          acceleration: 0.25,
-          turnRate: 180,
-        }),
-      ),
+      mkShip(starterShip, keysPressed, fpsDelta, {
+        bounds,
+        acceleration: 0.25,
+        turnRate: 180,
+      }),
     )(mapEvt(() => constDyn(null))(shipDeath)),
   );
   const dynExplosions = explosionList(

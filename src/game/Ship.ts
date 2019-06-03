@@ -1,6 +1,12 @@
 import { Dynamic, Event, foldDyn, pipe } from "../frp";
 import { attach } from "../frp/Event";
-import { bound, Point, vectorXY, withContext } from "../graphics/Geometry";
+import {
+  bound,
+  Point,
+  vectorXY,
+  withContext,
+  wrapOutOfBounds,
+} from "../graphics/Geometry";
 import { KEY_CODES, KEY_FLAGS } from "./keyboard";
 
 export interface Ship {
@@ -129,13 +135,18 @@ export const mkShip = (
   keysPressed: Dynamic<number>,
   fpsDelta: Event<number>,
   // Config values are in units per *second*
-  { turnRate, acceleration }: { turnRate: number; acceleration: number },
+  {
+    turnRate,
+    acceleration,
+    bounds,
+  }: { turnRate: number; acceleration: number; bounds: [number, number] },
 ): Dynamic<Ship> => {
   return foldDyn((state, [keyMask, timeDelta]: [number, number]) => {
     const updates = [
       updateAngle(turnRate / 1000),
       updateVel(acceleration / 1000),
       updatePos,
+      () => wrapOutOfBounds(bounds),
     ];
     return pipe(...updates.map(update => update(timeDelta, keyMask)))(state);
   }, initialState)(attach(keysPressed, fpsDelta));
