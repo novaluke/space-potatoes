@@ -1,5 +1,7 @@
-import { Dynamic, Event, foldDyn } from "../frp";
+import { Dynamic, Event, foldDyn, mapEvt } from "../frp";
+import { mapEvtMaybe } from "../frp/Event";
 import { Point } from "../graphics/Geometry";
+import { Explosion } from "./Explosion";
 
 export interface Explosion {
   radius: [number, number]; // start size, end size
@@ -42,14 +44,13 @@ export const drawExplosion = ({
 };
 
 export const mkExplosion = (
-  // ctx: CanvasRenderingContext2D,
   init: { radius: [number, number]; pos: Point; duration: number },
   fpsDelta: Event<number>,
-): Dynamic<Explosion> => {
+): [Dynamic<Explosion>, Event<{}>] => {
   const dyn = foldDyn(updateExplosion, { ...init, elapsed: 0 })(fpsDelta);
-  // TODO add takeWhile(explosion => explosion.elapsed < explosion.duration)
-  // dyn.subscribe(explosion =>
-  //   withContext(ctx, { translate: explosion.pos })(drawExplosion(explosion)),
-  // );
-  return dyn;
+  // TODO consider what's necessary to ensure this resource is released afterward
+  const endEvent = mapEvtMaybe(({ elapsed, duration }: Explosion) =>
+    elapsed >= duration ? true : null,
+  )(dyn);
+  return [dyn, endEvent];
 };
