@@ -4,7 +4,7 @@ Quality:
   ☐ Make sure commented-out code is removed.
   ☐ Refactor + extract the logic for tracking the list of asteroids.
   ☐ Refactor + extract the logic for tracking the list of explosions.
-  ☐ Use explicit overloads to make `pipe` smarter about type inference.
+  ✔ Use explicit overloads to make `pipe` smarter about type inference. @done(Jun-03-2019)
   ☐ Use `pipe` everywhere instead of intermediate variables and transforms
     within transforms.
   ☐ Ensure all public exports in `src/frp` are exported.
