@@ -67,15 +67,15 @@ export const concatDyn = <T extends Array<Dynamic<any>>>(
   });
   return dynamic as Dynamic<ExtractTupleGenerics<T>>;
 };
-export const splitDyn = <T extends Dynamic<any[]>>(
-  dyn: T,
-): { [K in keyof ExtractGeneric<T>]: Dynamic<ExtractGeneric<T>[K]> } => {
+export const splitDyn = <T extends any[]>(
+  dyn: Dynamic<T>,
+): { [K in keyof T]: Dynamic<T[K]> } => {
   const outputs = dyn.value.map(val => mkDyn(val));
   outputs.forEach(([_, update], index) =>
     dyn.subscribe(val => update(val[index])),
   );
   return (outputs.map(([dynamic, _]) => dynamic) as unknown) as {
-    [K in keyof ExtractGeneric<T>]: Dynamic<ExtractGeneric<T>[K]>
+    [K in keyof T]: Dynamic<T[K]>
   };
 };
 // WARNING: only partially tested!
