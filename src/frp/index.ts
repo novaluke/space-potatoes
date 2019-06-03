@@ -19,6 +19,8 @@ export {
 } from "./Event";
 export * from "./pipe";
 
+export type Update<T> = (state: T) => T;
+
 // Workaround for not being able to re-export types with the --isolatedModules
 // flag enabled.
 // eslint-disable-next-line import/first
