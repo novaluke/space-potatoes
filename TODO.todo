@@ -39,6 +39,7 @@ Features:
   ☐ Asteroids can't spawn within a certain radius of the ship.
 
 Long-term:
+  ☐ Move away from Create React App (and all React-related setup) to a setup properly tailored for Space Potatoes.
   ☐ Auto-reset the game when the ship has been destroyed.
     - Consider some kind of countdown before the game resumes so that it isn't
       jarring and doesn't surprise players with suddenly having to dodge new
