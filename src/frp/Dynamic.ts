@@ -17,10 +17,13 @@ export const foldDyn = <A, B>(reducer: (acc: B, event: A) => B, initial: B) => (
 
 export const mkDyn = <T>(initial: T): [Dynamic<T>, (val: T) => void] => {
   let value = initial;
-  const [{ subscribe, unsubscribe }, emit] = mkEvent<T>();
+  const [{ subscribe, unsubscribe }, , emitThunk] = mkEvent<T>();
   const update = (newVal: T) => {
     value = newVal;
-    emit(value);
+    // Use emitThunk to ensure that the latest value is always used, rather than
+    // locking the value in at the time of the emit called (ie. subscribers
+    // after the first might get stale values).
+    emitThunk(() => value);
   };
   const dynamic: Dynamic<T> = {
     subscribe,

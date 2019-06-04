@@ -13,7 +13,7 @@ Quality:
   ☐ Check for proper resource release when a stream is no longer needed.
   ☐ Extract hard-coded values into configuration variables (eg. explosion size,
     ship size, etc.).
-  ☐ Solve problems with order-of-occurrence (example: ship moving slowly triggers multiple death explosions due to the concatDyn(...asteroids) firing multiple times before the ship updates.
+  ✔ Solve problems with order-of-occurrence (example: ship moving slowly triggers multiple death explosions due to the concatDyn(...asteroids) firing multiple times before the ship updates. @done(Jun-04-2019)
 
 Features:
   ☐ Ship can fire bullets that destroy asteroids.

@@ -1,4 +1,3 @@
-import { registerEmitter } from "./core";
 import { Dynamic } from "./Dynamic";
 
 export type Subscriber<T> = (val: T) => void;
@@ -22,7 +21,11 @@ export const fromAnimationFrame = (): Event<number> => {
   return event;
 };
 
-export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
+export const mkEvent = <T>(): [
+  Event<T>,
+  (val: T) => void,
+  (fn: () => T) => void
+] => {
   const subs: Array<Subscriber<T>> = [];
   const event: Event<T> = {
     subscribe: sub => subs.push(sub),
@@ -32,9 +35,15 @@ export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
     },
   };
   const emit = (val: T) => {
-    if (subs.length) registerEmitter(val, subs);
+    subs.forEach(sub => sub(val));
   };
-  return [event, emit];
+  // Used by Dynamics to ensure that the value emitted is current as of the
+  // subscriber being called, rather than locked-in at the time of *emit* being
+  // called (ie. only "current" for the first subscriber called).
+  const emitThunk = (fn: () => T) => {
+    subs.forEach(sub => sub(fn()));
+  };
+  return [event, emit, emitThunk];
 };
 
 // Type of `event` (`K`) copy+pasted from the type of `addEventListener` on
