@@ -107,6 +107,12 @@ export function filter<T>(
   };
 }
 
+export const tag = <T>(dyn: Dynamic<T>, source: Event<any>): Event<T> => {
+  const [event, emit] = mkEvent<T>();
+  source.subscribe(() => emit(dyn.value));
+  return event;
+};
+
 export const attach = <A, B>(
   dyn: Dynamic<A>,
   source: Event<B>,

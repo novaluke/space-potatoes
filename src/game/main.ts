@@ -8,7 +8,7 @@ import {
   join,
   mapDyn,
 } from "../frp";
-import { mapEvt, mkEvent } from "../frp/Event";
+import { mapEvt, mkEvent, tag } from "../frp/Event";
 import {
   circleCollision,
   Point,
@@ -86,7 +86,7 @@ export default (ctx: CanvasRenderingContext2D) => {
     },
   );
 
-  concatDyn(dynShip, flatAsteroids, flatExplosions).subscribe(
+  tag(concatDyn(dynShip, flatAsteroids, flatExplosions), fpsDelta).subscribe(
     ([ship, asteroids, explosions]) => {
       drawBackground(ctx);
       if (ship !== null) {

@@ -9,6 +9,7 @@ export {
 } from "./Dynamic";
 export {
   attach,
+  tag,
   mapEvtMaybe,
   never,
   merge,
