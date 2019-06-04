@@ -1,5 +1,10 @@
 import { Event, foldDyn } from "../frp";
-import { bound, drawPoly, Point, wrapOutOfBounds } from "../graphics/Geometry";
+import {
+  drawPoly,
+  Point,
+  randomBetween,
+  wrapOutOfBounds,
+} from "../graphics/Geometry";
 import { Asteroid } from "./Asteroid";
 
 export interface Asteroid {
@@ -21,7 +26,7 @@ export const randomAsteroid = (
   bounds: [number, number],
 ): Asteroid => {
   const vertex = (index: number): Point => {
-    const thisRadius = bound(radius * 0.75, radius, Math.random() * radius);
+    const thisRadius = randomBetween(radius * 0.75, radius * 1.25);
     return [
       thisRadius * Math.cos((index * Math.PI * 2) / vertexCount),
       thisRadius * Math.sin((index * Math.PI * 2) / vertexCount),

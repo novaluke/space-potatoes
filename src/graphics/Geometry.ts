@@ -40,6 +40,9 @@ export const vectorXY = (
 export const bound = (min: number, max: number, val: number) =>
   Math.max(min, Math.min(max, val));
 
+export const randomBetween = (min: number, max: number) =>
+  Math.random() * (max - min) + min;
+
 export const distanceBetweenPoints = (a: Point, b: Point) =>
   Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2);
 
