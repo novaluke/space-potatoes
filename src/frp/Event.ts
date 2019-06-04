@@ -31,7 +31,9 @@ export const mkEvent = <T>(): [Event<T>, (val: T) => void] => {
       if (index !== -1) subs.splice(subs.indexOf(sub), 1);
     },
   };
-  const emit = (val: T) => registerEmitter(val, subs);
+  const emit = (val: T) => {
+    if (subs.length) registerEmitter(val, subs);
+  };
   return [event, emit];
 };
 
@@ -128,6 +130,20 @@ export const takeWhile = <T>(
       source.unsubscribe(sub);
     }
     if (predicate(val) || inclusive) emit(val);
+  };
+  source.subscribe(sub);
+  return event;
+};
+export const take = <T>(n: number) => (source: Event<T>): Event<T> => {
+  const [event, emit] = mkEvent<T>();
+  let count = 0;
+  const sub = (val: T) => {
+    count += 1;
+    if (count <= n) {
+      emit(val);
+    } else {
+      source.unsubscribe(sub);
+    }
   };
   source.subscribe(sub);
   return event;
