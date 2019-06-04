@@ -8,6 +8,7 @@ import {
   mapEvt,
   merge,
   mkEvent,
+  throttle,
 } from "./Event";
 
 describe("Event", () => {
@@ -156,6 +157,59 @@ describe("Event", () => {
 
       update(1);
       expect(emitCount).toBe(0);
+    });
+  });
+
+  describe("throttle", () => {
+    let origNow: typeof performance.now;
+    let now: number;
+    beforeEach(() => {
+      now = 0;
+      origNow = performance.now;
+      performance.now = jest.fn(() => now);
+    });
+    afterEach(() => {
+      performance.now = origNow;
+    });
+    it("lets the first emitted value through", () => {
+      const [event, emit] = mkEvent();
+      const sub = jest.fn();
+      const value = "Space Potatoes";
+      throttle(1000)(event).subscribe(sub);
+
+      emit(value);
+      expect(sub).toHaveBeenCalledWith(value);
+    });
+
+    describe("after an event is emitted", () => {
+      it("filters out subsequent events within the given interval", () => {
+        const interval = 500;
+        const [event, emit] = mkEvent();
+        const sub = jest.fn();
+        const values = [
+          "Hello World!",
+          "Space potatoes is the best!",
+          "And so is FRP!",
+          "The end.",
+          "I will not be emitted",
+        ];
+        throttle(interval)(event).subscribe(sub);
+
+        emit(values[0]);
+        emit(values[1]);
+        expect(sub).not.toHaveBeenCalledWith(values[1]);
+
+        now += interval - 1;
+        emit(values[2]);
+        expect(sub).not.toHaveBeenCalledWith(values[2]);
+
+        now += 1;
+        emit(values[3]);
+        expect(sub).not.toHaveBeenCalledWith(values[1]);
+        expect(sub).not.toHaveBeenCalledWith(values[2]);
+        expect(sub).toHaveBeenCalledWith(values[3]);
+        expect(sub).not.toHaveBeenCalledWith(values[4]);
+      });
     });
   });
 });

@@ -1,4 +1,5 @@
-import { Dynamic } from "./Dynamic";
+import { Dynamic, foldDyn } from "./Dynamic";
+import { pipe } from "./pipe";
 
 export type Subscriber<T> = (val: T) => void;
 
@@ -123,6 +124,21 @@ export const attach = <A, B>(
 };
 
 export const never = <T>(): Event<T> => mkEvent<T>()[0];
+
+export const throttle = <T>(interval: number) => (
+  source: Event<T>,
+): Event<T> => {
+  let lastEmit: number | null = null;
+  const [event, emit] = mkEvent<T>();
+  source.subscribe(val => {
+    const now = performance.now();
+    if (lastEmit === null || now - lastEmit >= interval) {
+      lastEmit = now;
+      emit(val);
+    }
+  });
+  return event;
+};
 
 // WARNING: untested!
 export const mapEvtMaybe = <T, R>(transform: (val: T) => R | null) => (
