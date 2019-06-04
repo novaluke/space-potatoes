@@ -81,8 +81,10 @@ export const drawPoly = (vertices: Point[], config: DrawConfig = {}) => (
     index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y),
   );
   ctx.closePath();
-  ctx.stroke();
+  // Fill before stroke or the fill will clip part of the stroke (stroke is
+  // rendered as centered, ie. half-in and half-out of the shape).
   if (config.fillStyle) ctx.fill();
+  ctx.stroke();
 };
 
 export const circleCollision = (

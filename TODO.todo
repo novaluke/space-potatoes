@@ -58,3 +58,4 @@ Long-term:
   ☐ Options menu with:
     ☐ Toggle sound.
     ☐ Toggle music.
+  ☐ Objects overlapping the edge of the screen should appear on both sides simultaneously, with corresponding hitboxes.

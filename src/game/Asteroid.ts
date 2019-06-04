@@ -17,7 +17,11 @@ export interface Asteroid {
 export const drawAsteroid = ({ vertices }: Asteroid) => (
   ctx: CanvasRenderingContext2D,
 ) => {
-  drawPoly(vertices, { strokeStyle: "slategrey", lineWidth: 1 })(ctx);
+  drawPoly(vertices, {
+    fillStyle: "black",
+    lineWidth: 1,
+    strokeStyle: "slategrey",
+  })(ctx);
 };
 
 export const randomAsteroid = (
