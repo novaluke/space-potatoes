@@ -46,7 +46,7 @@ export const explosionList = (
   // Required to circumvent the recursive dependency of the explosions list
   // depending on the events coming out of the explosions it creates.
   const [explosionEnd, emitExplosionEnd] = mkEvent<number>();
-  const [asteroids, endEvents] = pipe(
+  const [explosions, endEvents] = pipe(
     foldDyn((state: State, update: Update) => update(state), [[], []] as State),
     splitDyn,
   )(
@@ -62,5 +62,5 @@ export const explosionList = (
     switchDyn,
   )(endEvents).subscribe(emitExplosionEnd);
 
-  return asteroids;
+  return explosions;
 };
