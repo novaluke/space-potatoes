@@ -1,5 +1,5 @@
 import { Dynamic, Event, foldDyn, pipe } from "../frp";
-import { attach } from "../frp/Event";
+import { attach, mapEvtMaybe, never, tag, throttle } from "../frp/Event";
 import {
   bound,
   Point,
@@ -30,6 +30,8 @@ const shipBounds: ShipBounds = {
   backRight: [-10, 15],
   nose: [20, 0],
 };
+
+const fireInterval = 0.5 * 1000; // milliseconds
 
 export const drawShip = (thrustPower: number) => (
   ctx: CanvasRenderingContext2D,
@@ -140,8 +142,8 @@ export const mkShip = (
     acceleration,
     bounds,
   }: { turnRate: number; acceleration: number; bounds: [number, number] },
-): Dynamic<Ship> => {
-  return foldDyn((state, [keyMask, timeDelta]: [number, number]) => {
+): [Dynamic<Ship>, Event<Ship>] => {
+  const ship = foldDyn((state, [keyMask, timeDelta]: [number, number]) => {
     const updates = [
       updateAngle(turnRate / 1000),
       updateVel(acceleration / 1000),
@@ -150,4 +152,14 @@ export const mkShip = (
     ];
     return pipe(...updates.map(update => update(timeDelta, keyMask)))(state);
   }, initialState)(attach(keysPressed, fpsDelta));
+  const fireEvents = pipe(
+    mapEvtMaybe((keyMask: number) =>
+      keyMask & KEY_FLAGS[KEY_CODES.s] ? {} : null,
+    ),
+    throttle(fireInterval),
+    // TODO consider having tag and attach be partially applied so that this
+    // isn't required
+    tag.bind<null, Dynamic<Ship>, [Event<any>], Event<Ship>>(null, ship),
+  )(tag(keysPressed, fpsDelta));
+  return [ship, fireEvents];
 };

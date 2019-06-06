@@ -179,3 +179,11 @@ export const take = <T>(n: number) => (source: Event<T>): Event<T> => {
   source.subscribe(sub);
   return event;
 };
+export const takeUntil = <T>(notifier: Event<any>) => (
+  source: Event<T>,
+): Event<T> => {
+  const [event, emit] = mkEvent<T>();
+  source.subscribe(emit);
+  notifier.subscribe(() => source.unsubscribe(emit));
+  return event;
+};

@@ -1,5 +1,6 @@
 import { Dynamic } from "./Dynamic";
 import { Event, mkEvent } from "./Event";
+import { Update } from "./index";
 
 export interface Dynamic<T> extends Event<T> {
   readonly value: T;
@@ -91,6 +92,25 @@ export const switchDyn = <T>(dyn: Dynamic<Event<T>>): Event<T> => {
     newEvent.subscribe(emit);
   });
   return event;
+};
+export const distributeMapOverDyn = <T extends Record<string, Dynamic<any>>>(
+  dynMapping: T,
+): Dynamic<{ [K in keyof T]: ExtractGeneric<T[K]> }> => {
+  type State = { [K in keyof T]: ExtractGeneric<T[K]> };
+  const initial = (Object.keys(dynMapping) as Array<keyof T>).reduce(
+    (acc, key) => ({ ...acc, [key]: dynMapping[key].value }),
+    {} as State,
+  );
+  const [updates, emitUpdate] = mkEvent<Update<State>>();
+  Object.keys(dynMapping).forEach(key =>
+    dynMapping[key].subscribe(val =>
+      emitUpdate(prev => ({ ...prev, [key]: val })),
+    ),
+  );
+  const dyn = foldDyn((state, update: Update<State>) => update(state), initial)(
+    updates,
+  );
+  return dyn;
 };
 // WARNING: only partially tested!
 export const join = <T>(outer: Dynamic<Dynamic<T>>): Dynamic<T> => {

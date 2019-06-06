@@ -1,7 +1,7 @@
 Quality:
   ✔ Fix bug with ship not wrapping after it's already wrapped past one screen's worth. @done(Jun-03-2019)
   ☐ Make sure commented-out code is removed.
-  ☐ Refactor + extract the logic for tracking the list of asteroids.
+  ✔ Refactor + extract the logic for tracking the list of asteroids. @done(Jun-05-2019)
   ✔ Refactor + extract the logic for tracking the list of explosions. @done(Jun-03-2019)
   ✔ Use explicit overloads to make `pipe` smarter about type inference. @done(Jun-03-2019)
   ☐ Use `pipe` everywhere instead of intermediate variables and transforms
@@ -16,24 +16,21 @@ Quality:
   ✔ Solve problems with order-of-occurrence (example: ship moving slowly triggers multiple death explosions due to the concatDyn(...asteroids) firing multiple times before the ship updates. @done(Jun-04-2019)
 
 Features:
-  ☐ Ship can fire bullets that destroy asteroids.
-    ☐ Implement debounce FRP operator.
-    ☐ Debounce the "fire key" events to prevent a continuous stream of bullets
-      (ie. enforce a fire rate).
-    ☐ Create a self-managed `Bullet` component, which can:
-      ☐ Update its own position each frame.
-      ☐ Emit an expiry event once its lifetime is over.
-    ☐ Create a self-managed `BulletList` component, which can:
-      ☐ Add a new bullet to the list whenever it receives a "bullet fired"
-        event.
-      ☐ Remove a bullet from the list whenever the bullet emits an expiry event.
-      ☐ Return the list of bullets, so the main game logic can check for
-        collisions.
-    ☐ Check for bullet-asteroid collisions in the main game logic. When a
-      collision is detected:_
-      ☐ Create a new explosion at the bullet's position.
-      ☐ Delete the asteroid.
-      ☐ Delete the bullet.
+  ✔ Ship can fire bullets that destroy asteroids. @done(Jun-05-2019)
+    ✔ Implement throttle FRP operator. @done(Jun-05-2019)
+    ✔ Throttle the "fire key" events to prevent a continuous stream of bullets (ie. enforce a fire rate). @done(Jun-05-2019)
+    ✔ Create a self-managed `Bullet` component, which can: @done(Jun-05-2019)
+      ✔ Update its own position each frame. @done(Jun-05-2019)
+      ✔ Emit an expiry event once its lifetime is over. @done(Jun-05-2019)
+    ✔ Create a self-managed `BulletList` component, which can: @done(Jun-05-2019)
+      ✔ Add a new bullet to the list whenever it receives a "bullet fired" event. @done(Jun-05-2019)
+      ✔ Remove a bullet from the list whenever the bullet emits an expiry event. @done(Jun-05-2019)
+      ✔ Return the list of bullets, so the main game logic can check for collisions. @done(Jun-05-2019)
+    ✔ Check for bullet-asteroid collisions in the main game logic. When a collision is detected:_ @done(Jun-05-2019)
+      ✔ Create a new explosion at the bullet's position. @done(Jun-05-2019)
+      ✔ Delete the asteroid. @done(Jun-05-2019)
+      ✔ Delete the bullet. @done(Jun-05-2019)
+  ☐ Change ship fire key to use spacebar.
   ☐ Add a "Reset game" button for when all asteroids have been destroyed or the
     ship has been destroyed.
   ☐ Asteroids can't spawn within a certain radius of the ship.
