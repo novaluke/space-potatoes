@@ -30,5 +30,6 @@ export function pipe<Args extends any[], A, B, C, D, E, F>(
 ): (...args: Args) => F;
 export function pipe<T>(...fns: Array<(val: T) => T>): (val: T) => T;
 export function pipe(...fns: any[]) {
-  return (input: any) => fns.reduce((val, fn) => fn(val), input);
+  return (...args: any[]) =>
+    fns.slice(1).reduce((val, fn) => fn(val), fns[0](...args));
 }
