@@ -7,7 +7,7 @@ Quality:
   ☐ Use `pipe` everywhere instead of intermediate variables and transforms
     within transforms.
   ✔ Ensure all public exports in `src/frp` are exported. @done(Jun-07-2019)
-  ☐ Ensure all imports are from `src/frp`, not its children.
+  ✔ Ensure all imports are from `src/frp`, not its children. @done(Jun-07-2019)
   ☐ See if the update function pattern would help the core state logic.
   ☐ Test all FRP code.
   ☐ Check for proper resource release when a stream is no longer needed.

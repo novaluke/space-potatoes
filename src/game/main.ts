@@ -2,25 +2,24 @@ import { emit } from "cluster";
 import {
   concatDyn,
   constDyn,
+  distributeMapOverDyn,
   Dynamic,
   Event,
+  foldDyn,
   fromAnimationFrame,
   holdDyn,
   join,
   mapDyn,
-  pipe,
-} from "../frp";
-import { distributeMapOverDyn, foldDyn } from "../frp/Dynamic";
-import {
   mapEvt,
   mapEvtMaybe,
   merge,
   mkEvent,
   never,
+  pipe,
   tag,
   takeUntil,
   throttle,
-} from "../frp/Event";
+} from "../frp";
 import {
   circleCollision,
   Point,

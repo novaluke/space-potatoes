@@ -5,12 +5,12 @@ import {
   mapDyn,
   mapEvt,
   merge,
+  mkEvent,
   pipe,
   splitDyn,
+  switchDyn,
   Update as BaseUpdate,
 } from "../frp";
-import { switchDyn } from "../frp/Dynamic";
-import { mkEvent } from "../frp/Event";
 import { Bullet, mkBullet } from "./Bullet";
 
 type State = [Array<Dynamic<Bullet>>, Array<Event<{}>>];

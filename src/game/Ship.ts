@@ -1,5 +1,14 @@
-import { Dynamic, Event, foldDyn, pipe } from "../frp";
-import { attach, mapEvtMaybe, never, tag, throttle } from "../frp/Event";
+import {
+  attach,
+  Dynamic,
+  Event,
+  foldDyn,
+  mapEvtMaybe,
+  never,
+  pipe,
+  tag,
+  throttle,
+} from "../frp";
 import {
   bound,
   Point,

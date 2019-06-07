@@ -5,12 +5,12 @@ import {
   mapDyn,
   mapEvt,
   merge,
+  mkEvent,
   pipe,
   splitDyn,
+  switchDyn,
   Update as BaseUpdate,
 } from "../frp";
-import { switchDyn } from "../frp/Dynamic";
-import { mkEvent } from "../frp/Event";
 import { Asteroid, mkAsteroid } from "./Asteroid";
 
 type State = Array<Dynamic<Asteroid>>;

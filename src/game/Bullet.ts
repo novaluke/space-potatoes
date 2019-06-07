@@ -1,5 +1,4 @@
-import { Dynamic, Event, filter, foldDyn, never, pipe } from "../frp";
-import { take } from "../frp/Event";
+import { Dynamic, Event, filter, foldDyn, never, pipe, take } from "../frp";
 import { Point, vectorXY, wrapOutOfBounds } from "../graphics/Geometry";
 import { Ship } from "./Ship";
 
