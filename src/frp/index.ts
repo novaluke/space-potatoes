@@ -1,11 +1,13 @@
 export {
   concatDyn,
   constDyn,
+  distributeMapOverDyn,
   foldDyn,
   holdDyn,
   join,
   mapDyn,
   splitDyn,
+  switchDyn,
 } from "./Dynamic";
 
 export {
@@ -16,8 +18,13 @@ export {
   mapEvt,
   mapEvtMaybe,
   merge,
+  mkEvent,
   never,
   tag,
+  take,
+  takeUntil,
+  takeWhile,
+  throttle,
 } from "./Event";
 
 export * from "./pipe";
@@ -30,5 +37,6 @@ export type Update<T> = (state: T) => T;
 import { Dynamic } from "./Dynamic";
 export type Dynamic<T> = Dynamic<T>;
 // eslint-disable-next-line import/first
-import { Event } from "./Event";
+import { Event, Subscriber } from "./Event";
 export type Event<T> = Event<T>;
+export type Subscriber<T> = Subscriber<T>;
