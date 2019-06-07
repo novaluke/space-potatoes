@@ -1,50 +1,31 @@
-import { emit } from "cluster";
 import {
   concatDyn,
   constDyn,
-  distributeMapOverDyn,
   Dynamic,
-  Event,
-  foldDyn,
   fromAnimationFrame,
   holdDyn,
   join,
   mapDyn,
   mapEvt,
-  mapEvtMaybe,
   merge,
   mkEvent,
-  never,
-  pipe,
   tag,
   takeUntil,
-  throttle,
 } from "../frp";
-import {
-  circleCollision,
-  Point,
-  withContext,
-  wrapOutOfBounds,
-} from "../graphics/Geometry";
+import { circleCollision, Point, withContext } from "../graphics/Geometry";
 import { Asteroid, drawAsteroid, mkAsteroid } from "./Asteroid";
 import { asteroidList } from "./AsteroidList";
-import { Bullet, drawBullet, mkBullet } from "./Bullet";
+import { Bullet, drawBullet } from "./Bullet";
 import { bulletList } from "./BulletList";
 import { drawExplosion, Explosion, mkExplosion } from "./Explosion";
 import { explosionList } from "./ExplosionList";
-import { KEY_CODES, KEY_FLAGS, registerForKeyEvents } from "./keyboard";
+import { registerForKeyEvents } from "./keyboard";
 import { drawShip, mkShip, Ship } from "./Ship";
 
 const drawBackground = (ctx: CanvasRenderingContext2D) => {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };
-
-interface State {
-  ship: Dynamic<Ship> | null;
-  asteroids: Array<Dynamic<Asteroid>>;
-  explosions: Array<Dynamic<Explosion>>;
-}
 
 export default (ctx: CanvasRenderingContext2D) => {
   const bounds: [number, number] = [ctx.canvas.width, ctx.canvas.height];
