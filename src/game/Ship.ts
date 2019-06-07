@@ -161,7 +161,7 @@ export const mkShip = (
   }, initialState)(attach(keysPressed, fpsDelta));
   const fireEvents = pipe(
     mapEvtMaybe((keyMask: number) =>
-      keyMask & KEY_FLAGS[KEY_CODES.s] ? {} : null,
+      keyMask & KEY_FLAGS[KEY_CODES.space] ? {} : null,
     ),
     throttle(fireInterval),
     // TODO consider having tag and attach be partially applied so that this

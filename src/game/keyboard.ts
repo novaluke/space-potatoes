@@ -14,6 +14,7 @@ export const KEY_CODES = Object.freeze({
   a: "KeyA" as "KeyA",
   s: "KeyS" as "KeyS",
   d: "KeyD" as "KeyD",
+  space: "Space" as "Space",
 });
 // tslint:enable:object-literal-sort-keys
 

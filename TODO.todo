@@ -30,7 +30,7 @@ Features:
       ✔ Create a new explosion at the bullet's position. @done(Jun-05-2019)
       ✔ Delete the asteroid. @done(Jun-05-2019)
       ✔ Delete the bullet. @done(Jun-05-2019)
-  ☐ Change ship fire key to use spacebar.
+  ✔ Change ship fire key to use spacebar. @done(Jun-07-2019)
   ☐ Add a "Reset game" button for when all asteroids have been destroyed or the
     ship has been destroyed.
   ☐ Asteroids can't spawn within a certain radius of the ship.
