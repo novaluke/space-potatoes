@@ -50,9 +50,8 @@ export default (ctx: CanvasRenderingContext2D) => {
   const bounds: [number, number] = [ctx.canvas.width, ctx.canvas.height];
   const starterShip: Ship = {
     angle: (-90 / 180) * Math.PI,
-    dead: false,
     pos: [bounds[0] / 2, bounds[1] / 2],
-    scale: 1,
+    scale: 2,
     thrustPower: 0,
     vel: [0, 0],
   };
@@ -71,8 +70,6 @@ export default (ctx: CanvasRenderingContext2D) => {
     Array(5)
       .fill(null)
       .map(() => mkAsteroid({ bounds, vertexCount: 10, radius: 40 }, fpsDelta)),
-    bounds,
-    fpsDelta,
     asteroidDestroyed,
   );
   const [dynShip, fireEvents] = mkShip(starterShip, keysPressed, fpsDelta, {

@@ -4,7 +4,6 @@ import {
   Event,
   foldDyn,
   mapEvtMaybe,
-  never,
   pipe,
   tag,
   throttle,
@@ -19,7 +18,6 @@ import {
 import { KEY_CODES, KEY_FLAGS } from "./keyboard";
 
 export interface Ship {
-  dead: boolean;
   pos: Point;
   scale: number;
   angle: number;

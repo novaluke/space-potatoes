@@ -1,6 +1,6 @@
 Quality:
   ✔ Fix bug with ship not wrapping after it's already wrapped past one screen's worth. @done(Jun-03-2019)
-  ☐ Make sure commented-out code is removed.
+  ✔ Remove unused code. @done(Jun-07-2019)
   ✔ Refactor + extract the logic for tracking the list of asteroids. @done(Jun-05-2019)
   ✔ Refactor + extract the logic for tracking the list of explosions. @done(Jun-03-2019)
   ✔ Use explicit overloads to make `pipe` smarter about type inference. @done(Jun-03-2019)

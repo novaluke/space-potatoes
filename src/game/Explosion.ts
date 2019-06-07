@@ -1,12 +1,4 @@
-import {
-  Dynamic,
-  Event,
-  foldDyn,
-  mapEvt,
-  mapEvtMaybe,
-  pipe,
-  take,
-} from "../frp";
+import { Dynamic, Event, foldDyn, mapEvtMaybe, pipe, take } from "../frp";
 import { Point } from "../graphics/Geometry";
 import { Explosion } from "./Explosion";
 

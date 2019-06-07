@@ -1,5 +1,4 @@
-import { Dynamic, foldDyn } from "./Dynamic";
-import { pipe } from "./pipe";
+import { Dynamic } from "./Dynamic";
 
 export type Subscriber<T> = (val: T) => void;
 
