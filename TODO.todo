@@ -13,6 +13,17 @@ Quality:
   ☐ Extract hard-coded values into configuration variables (eg. explosion size,
     ship size, etc.).
   ✔ Solve problems with order-of-occurrence (example: ship moving slowly triggers multiple death explosions due to the concatDyn(...asteroids) firing multiple times before the ship updates. @done(Jun-04-2019)
+  ☐ Dynamics shouldn't depend on the update event of other Dynamics
+  ☐ Dynamics shouldn't subscribe to other Dynamics, but should lazily fetch their source Dynamics' values instead, actively updating their own value only for Event sources.
+    Pretty sure Dynamics don't actually need to care when the source Dynamics'
+    values change - they can just fetch the current values whenever their own
+    value is required. It's only when an Event fires that they need to actually
+    explicitly record that change. The reasons behind this are difficult to
+    explain, but essentially a Dynamic depending on an Event has a value
+    dependent on the times the Event has fired, and with which value, but a
+    Dyanmic dependent on a Dynamic has a more declarative value - its value at
+    any given time is based on the value of the source Dynamic at that point in
+    time, regardless of what anyone's value used to be.
 
 Features:
   ✔ Ship can fire bullets that destroy asteroids. @done(Jun-05-2019)
