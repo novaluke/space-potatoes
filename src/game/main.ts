@@ -111,7 +111,7 @@ export default (ctx: CanvasRenderingContext2D) => {
       }
     }
   });
-  tag(concatDyn(flatBullets, flatAsteroids), fpsDelta).subscribe(
+  tag(concatDyn(flatBullets, flatAsteroids))(fpsDelta).subscribe(
     ([bullets, asteroids]) => {
       bullets.forEach((bullet, bulletIndex) => {
         asteroids.forEach((asteroid, asteroidIndex) => {
@@ -129,8 +129,7 @@ export default (ctx: CanvasRenderingContext2D) => {
     },
   );
 
-  tag(
-    concatDyn(flatBullets, shipState, flatAsteroids, flatExplosions),
+  tag(concatDyn(flatBullets, shipState, flatAsteroids, flatExplosions))(
     fpsDelta,
   ).subscribe(([bullets, ship, asteroids, explosions]) => {
     drawBackground(ctx);

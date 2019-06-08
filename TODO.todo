@@ -4,8 +4,7 @@ Quality:
   ✔ Refactor + extract the logic for tracking the list of asteroids. @done(Jun-05-2019)
   ✔ Refactor + extract the logic for tracking the list of explosions. @done(Jun-03-2019)
   ✔ Use explicit overloads to make `pipe` smarter about type inference. @done(Jun-03-2019)
-  ☐ Use `pipe` everywhere instead of intermediate variables and transforms
-    within transforms.
+  ✔ Use `pipe` everywhere instead of intermediate variables and transforms within transforms. @done(Jun-08-2019)
   ✔ Ensure all public exports in `src/frp` are exported. @done(Jun-07-2019)
   ✔ Ensure all imports are from `src/frp`, not its children. @done(Jun-07-2019)
   ☐ See if the update function pattern would help the core state logic.

@@ -3,7 +3,7 @@ import {
   Event,
   foldDyn,
   mapEvt,
-  merge,
+  pipe,
   Update as BaseUpdate,
 } from "../frp";
 import { Asteroid } from "./Asteroid";
@@ -21,10 +21,10 @@ export const asteroidList = (
   initialAsteroids: State,
   deleteEvent: Event<number>,
 ): Dynamic<Array<Dynamic<Asteroid>>> => {
-  const asteroids = foldDyn(
-    (state: State, update: Update) => update(state),
-    initialAsteroids,
-  )(merge(mapEvt<number, Update>(deleteAsteroid)(deleteEvent)));
+  const asteroids = pipe(
+    mapEvt<number, Update>(deleteAsteroid),
+    foldDyn((state: State, update: Update) => update(state), initialAsteroids),
+  )(deleteEvent);
 
   return asteroids;
 };

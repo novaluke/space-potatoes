@@ -132,7 +132,7 @@ describe("Event", () => {
       const [event, emit] = mkEvent<number>();
       const [dyn, update] = mkDyn<string>(dynValues[0]);
       let emitted: [string, number];
-      attach(dyn, event).subscribe(val => (emitted = val));
+      attach(dyn)(event).subscribe(val => (emitted = val));
 
       expect(emitted!).not.toBeDefined();
 
@@ -151,7 +151,7 @@ describe("Event", () => {
       const [event] = mkEvent();
       const [dyn, update] = mkDyn(0);
       let emitCount = 0;
-      attach(dyn, event).subscribe(() => (emitCount += 1));
+      attach(dyn)(event).subscribe(() => (emitCount += 1));
 
       expect(emitCount).toBe(0);
 

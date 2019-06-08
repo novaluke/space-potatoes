@@ -92,11 +92,14 @@ export const updateShip = (
   // tslint:disable-next-line:trailing-comma
   ...updates: ShipUpdate[]
 ): Dynamic<Ship> =>
-  foldDyn(
-    (oldShip, [keyMask, delta]: [number, number]) =>
-      pipe(...updates.map(update => update(delta, keyMask)))(oldShip),
-    starterShip,
-  )(attach(keysPressed, timeDelta));
+  pipe(
+    attach(keysPressed),
+    foldDyn(
+      (oldShip, [keyMask, delta]: [number, number]) =>
+        pipe(...updates.map(update => update(delta, keyMask)))(oldShip),
+      starterShip,
+    ),
+  )(timeDelta);
 
 // turnRate = degrees/ms (ie. give it (degrees/s) / 1000)
 export const updateAngle = (turnRate: number): ShipUpdate => (
@@ -150,23 +153,27 @@ export const mkShip = (
     bounds,
   }: { turnRate: number; acceleration: number; bounds: [number, number] },
 ): [Dynamic<Ship>, Event<Ship>] => {
-  const ship = foldDyn((state, [keyMask, timeDelta]: [number, number]) => {
-    const updates = [
-      updateAngle(turnRate / 1000),
-      updateVel(acceleration / 1000),
-      updatePos,
-      () => wrapOutOfBounds(bounds),
-    ];
-    return pipe(...updates.map(update => update(timeDelta, keyMask)))(state);
-  }, initialState)(attach(keysPressed, fpsDelta));
+  const ship = pipe(
+    attach(keysPressed),
+    foldDyn((state, [keyMask, timeDelta]: [number, number]) => {
+      const updates = [
+        updateAngle(turnRate / 1000),
+        updateVel(acceleration / 1000),
+        updatePos,
+        () => wrapOutOfBounds(bounds),
+      ];
+      return pipe(...updates.map(update => update(timeDelta, keyMask)))(state);
+    }, initialState),
+  )(fpsDelta);
   const fireEvents = pipe(
+    tag(keysPressed),
     mapEvtMaybe((keyMask: number) =>
       keyMask & KEY_FLAGS[KEY_CODES.space] ? {} : null,
     ),
     throttle(fireInterval),
     // TODO consider having tag and attach be partially applied so that this
     // isn't required
-    tag.bind<null, Dynamic<Ship>, [Event<any>], Event<Ship>>(null, ship),
-  )(tag(keysPressed, fpsDelta));
+    tag(ship),
+  )(fpsDelta);
   return [ship, fireEvents];
 };
