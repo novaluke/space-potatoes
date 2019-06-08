@@ -1,4 +1,4 @@
-import { Dynamic, Event, filter, foldDyn, pipe, take } from "../frp";
+import { Dynamic, Event, filter, foldDyn, pipe, tag, take } from "../frp";
 import { Point, vectorXY, wrapOutOfBounds } from "../graphics/Geometry";
 import { Ship } from "./Ship";
 
@@ -50,8 +50,9 @@ export const mkBullet = (
     initialState,
   )(fpsDelta);
   const endEvent = pipe(
+    tag(bullet),
     filter(({ elapsed }: Bullet) => elapsed >= bulletLifetime),
     take(1),
-  )(bullet);
+  )(fpsDelta);
   return [bullet, endEvent];
 };

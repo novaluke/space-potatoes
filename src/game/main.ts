@@ -101,17 +101,19 @@ export default (ctx: CanvasRenderingContext2D) => {
   //
   // Check if the ship has collided with an asteroid, and if so emit a death
   // event for it.
-  concatDyn(shipState, dynAsteroids).subscribe(([ship, asteroids]) => {
-    if (ship !== null) {
-      const hasCollided = !asteroids.every(
-        asteroid => !circleCollision(ship.pos, 20, asteroid.pos, 40),
-      );
-      if (hasCollided) {
-        // TODO make the explosion happen at the intersection of Ship and Asteroid
-        emitShipDeath(ship.pos);
+  tag(concatDyn(shipState, dynAsteroids))(fpsDelta).subscribe(
+    ([ship, asteroids]) => {
+      if (ship !== null) {
+        const hasCollided = !asteroids.every(
+          asteroid => !circleCollision(ship.pos, 20, asteroid.pos, 40),
+        );
+        if (hasCollided) {
+          // TODO make the explosion happen at the intersection of Ship and Asteroid
+          emitShipDeath(ship.pos);
+        }
       }
-    }
-  });
+    },
+  );
   tag(concatDyn(dynBullets, dynAsteroids))(fpsDelta).subscribe(
     ([bullets, asteroids]) => {
       bullets.forEach((bullet, bulletIndex) => {

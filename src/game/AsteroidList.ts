@@ -20,11 +20,8 @@ const deleteAsteroid = (index: number): Update => asteroids =>
 export const asteroidList = (
   initialAsteroids: State,
   deleteEvent: Event<number>,
-): Dynamic<Array<Dynamic<Asteroid>>> => {
-  const asteroids = pipe(
+): Dynamic<Array<Dynamic<Asteroid>>> =>
+  pipe(
     mapEvt<number, Update>(deleteAsteroid),
     foldDyn((state: State, update: Update) => update(state), initialAsteroids),
   )(deleteEvent);
-
-  return asteroids;
-};

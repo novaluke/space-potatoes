@@ -65,7 +65,7 @@ export const bulletList = (
     mapDyn((x: Array<Event<{}>>) =>
       x.map((e, index) => mapEvt(() => index)(e)),
     ),
-    mapDyn((x: Array<Event<number>>) => merge(...x)),
+    mapDyn(x => merge(...x)),
     switchDyn,
   )(endEvents).subscribe(emitBulletEnd);
 

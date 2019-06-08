@@ -1,4 +1,4 @@
-import { Dynamic, Event, foldDyn, mapEvtMaybe, pipe, take } from "../frp";
+import { Dynamic, Event, foldDyn, mapEvtMaybe, pipe, tag, take } from "../frp";
 import { Point } from "../graphics/Geometry";
 import { Explosion } from "./Explosion";
 
@@ -48,10 +48,11 @@ export const mkExplosion = (
 ): [Dynamic<Explosion>, Event<{}>] => {
   const dyn = foldDyn(updateExplosion, { ...init, elapsed: 0 })(fpsDelta);
   const endEvent = pipe(
+    tag(dyn),
     mapEvtMaybe(({ elapsed, duration }: Explosion) =>
       elapsed >= duration ? true : null,
     ),
     take(1),
-  )(dyn);
+  )(fpsDelta);
   return [dyn, endEvent];
 };
