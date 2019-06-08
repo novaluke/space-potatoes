@@ -11,7 +11,7 @@ export interface Bullet {
 const bulletVel = 250 / 1000;
 const bulletLifetime = 2.5 * 1000; // milliseconds
 
-export const drawBullet = (pos: Point) => (ctx: CanvasRenderingContext2D) => {
+export const drawBullet = (ctx: CanvasRenderingContext2D) => {
   const radius = 3;
   ctx.beginPath();
 

@@ -63,7 +63,7 @@ export function fromDOMEvent<
   eventType: K,
 ): Event<DocumentEventMap[K]> | Event<HTMLElementEventMap[K]> {
   const isDocument = (val: Document | HTMLElement): val is Document =>
-    "body" in target;
+    "body" in val;
   let mkEventOutput;
   if (isDocument(target)) {
     mkEventOutput = mkEvent<DocumentEventMap[K]>();

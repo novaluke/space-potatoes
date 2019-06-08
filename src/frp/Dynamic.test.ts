@@ -1,4 +1,3 @@
-import { updateExplosion } from "../game/Explosion";
 import { foldDyn, holdDyn, join, mapDyn, mkDyn } from "./Dynamic";
 import { mkEvent } from "./Event";
 

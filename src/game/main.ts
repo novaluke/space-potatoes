@@ -14,11 +14,11 @@ import {
   takeUntil,
 } from "../frp";
 import { circleCollision, Point, withContext } from "../graphics/Geometry";
-import { Asteroid, drawAsteroid, mkAsteroid } from "./Asteroid";
+import { drawAsteroid, mkAsteroid } from "./Asteroid";
 import { asteroidList } from "./AsteroidList";
-import { Bullet, drawBullet } from "./Bullet";
+import { drawBullet } from "./Bullet";
 import { bulletList } from "./BulletList";
-import { drawExplosion, Explosion, mkExplosion } from "./Explosion";
+import { drawExplosion, mkExplosion } from "./Explosion";
 import { explosionList } from "./ExplosionList";
 import { registerForKeyEvents } from "./keyboard";
 import { drawShip, mkShip, Ship } from "./Ship";
@@ -146,7 +146,7 @@ export default (ctx: CanvasRenderingContext2D) => {
       withContext(ctx, { translate: explosion.pos })(drawExplosion(explosion)),
     );
     bullets.forEach(bullet =>
-      withContext(ctx, { translate: bullet.pos })(drawBullet(bullet.pos)),
+      withContext(ctx, { translate: bullet.pos })(drawBullet),
     );
   });
 };
