@@ -71,7 +71,10 @@ export function fromDOMEvent<
     mkEventOutput = mkEvent<HTMLElementEventMap[K]>();
   }
   const [event, emit] = mkEventOutput;
-  target.addEventListener(eventType, emit);
+  target.addEventListener(eventType, e => {
+    e.preventDefault();
+    emit(e);
+  });
   return event;
 }
 
