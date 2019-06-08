@@ -1,44 +1,27 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Space Potatoes: Home-cooked FRP
 
-## Available Scripts
+This is a simple remake of the 1979 Atari game, "Asteroids". Emphasis is on
+simple - the goal here was not to create an amazing game, but to experiment with
+creating a Functional Reactive Programming system, so as to better understand
+how they work, what drives them under the hood, and explore functional
+programming with TypeScript.
 
-In the project directory, you can run:
+## Usage (firing up the game)
 
-### `npm start`
+Either visit <https://space-potatoes.webuildlegends.com> or clone the repository
+and run `yarn start`.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Running tests
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Tests can be run with `yarn test` (or run in debug mode with `yarn test:debug`).
+Test coverage is not complete. Due to difficulty in testing canvas-related
+functionality, rendering code is currently not tested. Furthermore, due to time
+constraints, the main game code is not tested either. However, test coverage for
+the FRP library side of the project (`src/frp`) is mostly complete.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Inspired by ["Code Asteroids in JavaScript (1979 Atari game) - tutorial
+[YouTube]](https://www.youtube.com/watch?v=H9CSWMxJx84) and [Reactivity from
+Scratch
+[YouTube]](https://www.youtube.com/playlist?list=PLrhzvIcii6GN_vruBNu04EVHo0PKixXwE)

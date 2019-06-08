@@ -22,17 +22,96 @@
     <title>Space Potatoes: Homecooked FRP</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <canvas id="game-canvas" width="700" height="500"></canvas>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <div id="main">
+      <noscript>You need to enable JavaScript to run this app.</noscript>
+      <h1>
+        Space Potatoes: <span style="font-size: 75%">Home-cooked FRP</span>
+      </h1>
+      <h2>Instructions:</h2>
+      <div class="instructions">
+        <p>Movement: W/A/D</p>
+        <p>Fire: spacebar</p>
+        <p>Reset game: refresh page</p>
+      </div>
+      <canvas id="game-canvas" width="700" height="500"></canvas>
+      <!--
+        This HTML file is a template.
+        If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        You can add webfonts, meta tags, or analytics to this file.
+        The build step will place the bundled scripts into the <body> tag.
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+        To begin the development, run `npm start` or `yarn start`.
+        To create a production bundle, use `npm run build` or `yarn build`.
+      -->
+      <h2>Space Potatoes? Home-cooked wha?</h2>
+      <p>
+        This game is a (shoddy) remake of the 1979 Atari game "Asteroids". Folks
+        like to say that
+        <a
+          href="https://www.popularmechanics.com/culture/movies/a15063/empire-strikes-back-asteroids-were-potatoes/"
+          >asteroids look like potatoes</a
+        >
+        (in space). And
+        <a href="https://www.youtube.com/watch?v=7rxgER1mkL0&t=2m01s"
+          >a game needs a name</a
+        >, so since I'm so witty, "Space Potatoes" was born.
+      </p>
+      <p>
+        So what's the deal with "Home-cooked FRP"? FRP stands for "Functional
+        Reactive Programming". I'm not going to get into the minutia of that
+        here, because that's complicated, but it's basically like taking
+        Functional Programming (which is itself a fantastic way to program) and
+        adding on the ability to react to events (eg. user input) in an equally
+        elegant way. In other words, it's the best damn way to program I've ever
+        found.
+      </p>
+      <p>
+        I've used various
+        <a href="https://rxjs-dev.firebaseapp.com/">Reactive</a> and
+        <a href="https://reflex-frp.org">Functional Reactive</a> systems in the
+        past, and have normally been satisfied with just knowing how to
+        <em>use</em> them, even though <em>how</em> the systems worked was still
+        black magic to me. Recently, though, I came across a couple YouTube
+        videos that inspired me. One was
+        <a href="https://www.youtube.com/watch?v=H9CSWMxJx84"
+          >making a remake of Asteroids in JavaScript</a
+        >. I'd never made a game before, or worked with the canvas at all, and
+        it seems like a fun way to learn something new - and being a game,
+        something more exciting to build than just another web app. The other
+        was a series on
+        <a
+          href="https://www.youtube.com/playlist?list=PLrhzvIcii6GN_vruBNu04EVHo0PKixXwE"
+          >building a Reactive system from scratch</a
+        >. It made the basic building blocks made sense, and inspired me to not
+        just try Reactive Programming again, but actually try
+        <em>implementing</em> it. To really dig in, get grubby, and figure out
+        what's going on under the hood.
+      </p>
+      <p>
+        And thus Space Potatoes was born. The game is obviously very simplistic
+        and lacking, because for <em>me</em> the <em>real</em> game was actually
+        building the underlying FRP system.
+      </p>
+      <p>
+        Feel free to
+        <a href="https://github.com/mayhewluke/space-potatoes"
+          >check out the source for said system on my Github</a
+        >. Being a free-time exploration for the sake of learning and becoming
+        stronger professionally, it's obviously not 100% feature-complete or
+        production-ready, but it is usable and clean enough to be readable.
+      </p>
+      <p style="font-size: 75%">
+        One caveat: TypeScript doesn't have great support for type inference
+        with functional programming styles, so there are a number of cases where
+        the type system (and its shortcomings) make the syntax more unwieldy
+        than it should be. Ultimately there's a tradeoff between JS/TS and
+        first-class functional programming languages, and as a web developer,
+        JS/TS is what I get paid to write in, so it's what made sense to use for
+        this exploration. Were we wanting proper, first-class support for this
+        style of programming, something like Haskell would probably be a better
+        bet in the long-term.
+      </p>
+    </div>
   </body>
 </html>
