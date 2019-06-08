@@ -9,6 +9,7 @@ import {
   mapEvt,
   merge,
   mkEvent,
+  pipe,
   tag,
   takeUntil,
 } from "../frp";
@@ -26,6 +27,12 @@ const drawBackground = (ctx: CanvasRenderingContext2D) => {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 };
+
+const flattenDynList = <T>(dynList: Dynamic<Array<Dynamic<T>>>): Dynamic<T[]> =>
+  pipe(
+    mapDyn((items: Array<Dynamic<T>>) => concatDyn(...items)),
+    join,
+  )(dynList);
 
 export default (ctx: CanvasRenderingContext2D) => {
   const bounds: [number, number] = [ctx.canvas.width, ctx.canvas.height];
@@ -47,11 +54,15 @@ export default (ctx: CanvasRenderingContext2D) => {
     Parameters<typeof mkExplosion>[0]
   >();
 
-  const dynAsteroids: Dynamic<Array<Dynamic<Asteroid>>> = asteroidList(
-    Array(5)
-      .fill(null)
-      .map(() => mkAsteroid({ bounds, vertexCount: 10, radius: 40 }, fpsDelta)),
-    asteroidDestroyed,
+  const dynAsteroids = flattenDynList(
+    asteroidList(
+      Array(5)
+        .fill(null)
+        .map(() =>
+          mkAsteroid({ bounds, vertexCount: 10, radius: 40 }, fpsDelta),
+        ),
+      asteroidDestroyed,
+    ),
   );
   const [dynShip, fireEvents] = mkShip(starterShip, keysPressed, fpsDelta, {
     bounds,
@@ -63,44 +74,34 @@ export default (ctx: CanvasRenderingContext2D) => {
       mapEvt(() => constDyn(null))(shipDeath),
     ),
   );
-  const dynExplosions = explosionList(
-    fpsDelta,
-    merge(
-      mapEvt((pos: Point) => ({
-        pos,
-        duration: 0.5,
-        radius: [20, 40] as [number, number],
-      }))(shipDeath),
-      createExplosion,
+  const dynExplosions = flattenDynList(
+    explosionList(
+      fpsDelta,
+      merge(
+        mapEvt((pos: Point) => ({
+          pos,
+          duration: 0.5,
+          radius: [20, 40] as [number, number],
+        }))(shipDeath),
+        createExplosion,
+      ),
     ),
   );
 
-  const dynBullets = bulletList(
-    bounds,
-    fpsDelta,
-    takeUntil<Ship>(shipDeath)(fireEvents),
-    bulletDelete,
+  const dynBullets = flattenDynList(
+    bulletList(
+      bounds,
+      fpsDelta,
+      takeUntil<Ship>(shipDeath)(fireEvents),
+      bulletDelete,
+    ),
   );
 
   // RENDER
-  const flatAsteroids = join(
-    mapDyn((asteroids: Array<Dynamic<Asteroid>>) => concatDyn(...asteroids))(
-      dynAsteroids,
-    ),
-  );
-  const flatExplosions = join(
-    mapDyn((explosions: Array<Dynamic<Explosion>>) => concatDyn(...explosions))(
-      dynExplosions,
-    ),
-  );
-  const flatBullets = join(
-    mapDyn((bullets: Array<Dynamic<Bullet>>) => concatDyn(...bullets))(
-      dynBullets,
-    ),
-  );
+  //
   // Check if the ship has collided with an asteroid, and if so emit a death
   // event for it.
-  concatDyn(shipState, flatAsteroids).subscribe(([ship, asteroids]) => {
+  concatDyn(shipState, dynAsteroids).subscribe(([ship, asteroids]) => {
     if (ship !== null) {
       const hasCollided = !asteroids.every(
         asteroid => !circleCollision(ship.pos, 20, asteroid.pos, 40),
@@ -111,7 +112,7 @@ export default (ctx: CanvasRenderingContext2D) => {
       }
     }
   });
-  tag(concatDyn(flatBullets, flatAsteroids))(fpsDelta).subscribe(
+  tag(concatDyn(dynBullets, dynAsteroids))(fpsDelta).subscribe(
     ([bullets, asteroids]) => {
       bullets.forEach((bullet, bulletIndex) => {
         asteroids.forEach((asteroid, asteroidIndex) => {
@@ -129,7 +130,7 @@ export default (ctx: CanvasRenderingContext2D) => {
     },
   );
 
-  tag(concatDyn(flatBullets, shipState, flatAsteroids, flatExplosions))(
+  tag(concatDyn(dynBullets, shipState, dynAsteroids, dynExplosions))(
     fpsDelta,
   ).subscribe(([bullets, ship, asteroids, explosions]) => {
     drawBackground(ctx);
