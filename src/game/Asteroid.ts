@@ -61,7 +61,6 @@ interface Config {
   bounds: [number, number];
 }
 export const mkAsteroid = (
-  // ctx: CanvasRenderingContext2D,
   { vertexCount, radius, bounds }: Config,
   fpsDelta: Event<number>,
 ) => {
@@ -77,8 +76,5 @@ export const mkAsteroid = (
       }),
     asteroid,
   )(fpsDelta);
-  // dyn.subscribe(roid =>
-  //   withContext(ctx, { translate: roid.pos })(drawAsteroid(roid)),
-  // );
   return dyn;
 };
